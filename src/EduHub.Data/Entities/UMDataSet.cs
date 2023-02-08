@@ -88,6 +88,9 @@ namespace EduHub.Data.Entities
                     case "LONGITUDE":
                         mapper[i] = (e, v) => e.LONGITUDE = v == null ? (double?)null : double.Parse(v);
                         break;
+                    case "UM_TRANS_ID":
+                        mapper[i] = (e, v) => e.UM_TRANS_ID = v;
+                        break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
@@ -328,6 +331,7 @@ BEGIN
         [BARCODE] varchar(37) NULL,
         [LATITUDE] float NULL,
         [LONGITUDE] float NULL,
+        [UM_TRANS_ID] varchar(30) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,
@@ -449,7 +453,7 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[UM]') AND 
             {
             }
 
-            public override int FieldCount { get { return 19; } }
+            public override int FieldCount { get { return 20; } }
 
             public override object GetValue(int i)
             {
@@ -487,11 +491,13 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[UM]') AND 
                         return Current.LATITUDE;
                     case 15: // LONGITUDE
                         return Current.LONGITUDE;
-                    case 16: // LW_DATE
+                    case 16: // UM_TRANS_ID
+                        return Current.UM_TRANS_ID;
+                    case 17: // LW_DATE
                         return Current.LW_DATE;
-                    case 17: // LW_TIME
+                    case 18: // LW_TIME
                         return Current.LW_TIME;
-                    case 18: // LW_USER
+                    case 19: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -532,11 +538,13 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[UM]') AND 
                         return Current.LATITUDE == null;
                     case 15: // LONGITUDE
                         return Current.LONGITUDE == null;
-                    case 16: // LW_DATE
+                    case 16: // UM_TRANS_ID
+                        return Current.UM_TRANS_ID == null;
+                    case 17: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 17: // LW_TIME
+                    case 18: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 18: // LW_USER
+                    case 19: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -579,11 +587,13 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[UM]') AND 
                         return "LATITUDE";
                     case 15: // LONGITUDE
                         return "LONGITUDE";
-                    case 16: // LW_DATE
+                    case 16: // UM_TRANS_ID
+                        return "UM_TRANS_ID";
+                    case 17: // LW_DATE
                         return "LW_DATE";
-                    case 17: // LW_TIME
+                    case 18: // LW_TIME
                         return "LW_TIME";
-                    case 18: // LW_USER
+                    case 19: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -626,12 +636,14 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[UM]') AND 
                         return 14;
                     case "LONGITUDE":
                         return 15;
-                    case "LW_DATE":
+                    case "UM_TRANS_ID":
                         return 16;
-                    case "LW_TIME":
+                    case "LW_DATE":
                         return 17;
-                    case "LW_USER":
+                    case "LW_TIME":
                         return 18;
+                    case "LW_USER":
+                        return 19;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

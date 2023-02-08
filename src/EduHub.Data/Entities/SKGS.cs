@@ -18,6 +18,7 @@ namespace EduHub.Data.Entities
         private IReadOnlyList<FER_FDT> Cache_SCHOOL_FER_FDT_SOURCE;
         private IReadOnlyList<KCD_TFR> Cache_SCHOOL_KCD_TFR_ORIG_SCHOOL;
         private IReadOnlyList<KCM_TFR> Cache_SCHOOL_KCM_TFR_ORIG_SCHOOL;
+        private IReadOnlyList<KFLO> Cache_SCHOOL_KFLO_SCHOOL;
         private IReadOnlyList<KGO_TFR> Cache_SCHOOL_KGO_TFR_ORIG_SCHOOL;
         private SCI Cache_SCHOOL_SCI_SCHOOL_LINK;
         private IReadOnlyList<SCI> Cache_SCHOOL_SCI_DESTINATION_SCHOOL;
@@ -434,6 +435,24 @@ namespace EduHub.Data.Entities
                 }
 
                 return Cache_SCHOOL_KCM_TFR_ORIG_SCHOOL;
+            }
+        }
+
+        /// <summary>
+        /// KFLO (FLO Placement information) related entities by [SKGS.SCHOOL]-&gt;[KFLO.SCHOOL]
+        /// School ID
+        /// </summary>
+        public IReadOnlyList<KFLO> SCHOOL_KFLO_SCHOOL
+        {
+            get
+            {
+                if (Cache_SCHOOL_KFLO_SCHOOL == null &&
+                    !Context.KFLO.TryFindBySCHOOL(SCHOOL, out Cache_SCHOOL_KFLO_SCHOOL))
+                {
+                    Cache_SCHOOL_KFLO_SCHOOL = new List<KFLO>().AsReadOnly();
+                }
+
+                return Cache_SCHOOL_KFLO_SCHOOL;
             }
         }
 

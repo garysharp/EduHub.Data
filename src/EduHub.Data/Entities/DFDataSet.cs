@@ -506,6 +506,15 @@ namespace EduHub.Data.Entities
                     case "GENDER_DESC_B":
                         mapper[i] = (e, v) => e.GENDER_DESC_B = v;
                         break;
+                    case "PARENT_A_SI_ID":
+                        mapper[i] = (e, v) => e.PARENT_A_SI_ID = v;
+                        break;
+                    case "PARENT_B_SI_ID":
+                        mapper[i] = (e, v) => e.PARENT_B_SI_ID = v;
+                        break;
+                    case "HEALTH_SUM_SI_ID":
+                        mapper[i] = (e, v) => e.HEALTH_SUM_SI_ID = v;
+                        break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
@@ -1711,6 +1720,9 @@ BEGIN
         [FSE] varchar(1) NULL,
         [GENDER_DESC_A] varchar(100) NULL,
         [GENDER_DESC_B] varchar(100) NULL,
+        [PARENT_A_SI_ID] varchar(20) NULL,
+        [PARENT_B_SI_ID] varchar(20) NULL,
+        [HEALTH_SUM_SI_ID] varchar(20) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,
@@ -2004,7 +2016,7 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND 
             {
             }
 
-            public override int FieldCount { get { return 152; } }
+            public override int FieldCount { get { return 155; } }
 
             public override object GetValue(int i)
             {
@@ -2308,11 +2320,17 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND 
                         return Current.GENDER_DESC_A;
                     case 148: // GENDER_DESC_B
                         return Current.GENDER_DESC_B;
-                    case 149: // LW_DATE
+                    case 149: // PARENT_A_SI_ID
+                        return Current.PARENT_A_SI_ID;
+                    case 150: // PARENT_B_SI_ID
+                        return Current.PARENT_B_SI_ID;
+                    case 151: // HEALTH_SUM_SI_ID
+                        return Current.HEALTH_SUM_SI_ID;
+                    case 152: // LW_DATE
                         return Current.LW_DATE;
-                    case 150: // LW_TIME
+                    case 153: // LW_TIME
                         return Current.LW_TIME;
-                    case 151: // LW_USER
+                    case 154: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -2619,11 +2637,17 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND 
                         return Current.GENDER_DESC_A == null;
                     case 148: // GENDER_DESC_B
                         return Current.GENDER_DESC_B == null;
-                    case 149: // LW_DATE
+                    case 149: // PARENT_A_SI_ID
+                        return Current.PARENT_A_SI_ID == null;
+                    case 150: // PARENT_B_SI_ID
+                        return Current.PARENT_B_SI_ID == null;
+                    case 151: // HEALTH_SUM_SI_ID
+                        return Current.HEALTH_SUM_SI_ID == null;
+                    case 152: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 150: // LW_TIME
+                    case 153: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 151: // LW_USER
+                    case 154: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -2932,11 +2956,17 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND 
                         return "GENDER_DESC_A";
                     case 148: // GENDER_DESC_B
                         return "GENDER_DESC_B";
-                    case 149: // LW_DATE
+                    case 149: // PARENT_A_SI_ID
+                        return "PARENT_A_SI_ID";
+                    case 150: // PARENT_B_SI_ID
+                        return "PARENT_B_SI_ID";
+                    case 151: // HEALTH_SUM_SI_ID
+                        return "HEALTH_SUM_SI_ID";
+                    case 152: // LW_DATE
                         return "LW_DATE";
-                    case 150: // LW_TIME
+                    case 153: // LW_TIME
                         return "LW_TIME";
-                    case 151: // LW_USER
+                    case 154: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -3245,12 +3275,18 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF]') AND 
                         return 147;
                     case "GENDER_DESC_B":
                         return 148;
-                    case "LW_DATE":
+                    case "PARENT_A_SI_ID":
                         return 149;
-                    case "LW_TIME":
+                    case "PARENT_B_SI_ID":
                         return 150;
-                    case "LW_USER":
+                    case "HEALTH_SUM_SI_ID":
                         return 151;
+                    case "LW_DATE":
+                        return 152;
+                    case "LW_TIME":
+                        return 153;
+                    case "LW_USER":
+                        return 154;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

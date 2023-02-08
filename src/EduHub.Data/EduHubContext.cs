@@ -83,7 +83,9 @@ namespace EduHub.Data
         private readonly KDIDataSet _KDI;
         private readonly KDODataSet _KDO;
         private readonly KEMADataSet _KEMA;
+        private readonly KEMAILDataSet _KEMAIL;
         private readonly KERRORDataSet _KERROR;
+        private readonly KFLODataSet _KFLO;
         private readonly KFTCDataSet _KFTC;
         private readonly KFUNDDataSet _KFUND;
         private readonly KGCDataSet _KGC;
@@ -277,6 +279,7 @@ namespace EduHub.Data
         private readonly STARDataSet _STAR;
         private readonly STAR_TFRDataSet _STAR_TFR;
         private readonly STBTDataSet _STBT;
+        private readonly STFLODataSet _STFLO;
         private readonly STMADataSet _STMA;
         private readonly STMBDataSet _STMB;
         private readonly STNATDataSet _STNAT;
@@ -434,7 +437,9 @@ namespace EduHub.Data
             _KDI = new KDIDataSet(this);
             _KDO = new KDODataSet(this);
             _KEMA = new KEMADataSet(this);
+            _KEMAIL = new KEMAILDataSet(this);
             _KERROR = new KERRORDataSet(this);
+            _KFLO = new KFLODataSet(this);
             _KFTC = new KFTCDataSet(this);
             _KFUND = new KFUNDDataSet(this);
             _KGC = new KGCDataSet(this);
@@ -628,6 +633,7 @@ namespace EduHub.Data
             _STAR = new STARDataSet(this);
             _STAR_TFR = new STAR_TFRDataSet(this);
             _STBT = new STBTDataSet(this);
+            _STFLO = new STFLODataSet(this);
             _STMA = new STMADataSet(this);
             _STMB = new STMBDataSet(this);
             _STNAT = new STNATDataSet(this);
@@ -762,7 +768,9 @@ namespace EduHub.Data
             yield return KDI;
             yield return KDO;
             yield return KEMA;
+            yield return KEMAIL;
             yield return KERROR;
+            yield return KFLO;
             yield return KFTC;
             yield return KFUND;
             yield return KGC;
@@ -956,6 +964,7 @@ namespace EduHub.Data
             yield return STAR;
             yield return STAR_TFR;
             yield return STBT;
+            yield return STFLO;
             yield return STMA;
             yield return STMB;
             yield return STNAT;
@@ -1363,9 +1372,19 @@ namespace EduHub.Data
         public KEMADataSet KEMA { get { return _KEMA; } }
 
         /// <summary>
+        /// ST EMAIL IMPORT
+        /// </summary>
+        public KEMAILDataSet KEMAIL { get { return _KEMAIL; } }
+
+        /// <summary>
         /// Import or Update Errors
         /// </summary>
         public KERRORDataSet KERROR { get { return _KERROR; } }
+
+        /// <summary>
+        /// FLO Placement information
+        /// </summary>
+        public KFLODataSet KFLO { get { return _KFLO; } }
 
         /// <summary>
         /// Fuel Tax Credit Rates
@@ -2331,6 +2350,11 @@ namespace EduHub.Data
         /// Student Transport Usage
         /// </summary>
         public STBTDataSet STBT { get { return _STBT; } }
+
+        /// <summary>
+        /// Student Flexible Learning Options
+        /// </summary>
+        public STFLODataSet STFLO { get { return _STFLO; } }
 
         /// <summary>
         /// Subject Selections &amp; Marks

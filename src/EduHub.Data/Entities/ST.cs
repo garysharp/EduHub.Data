@@ -51,6 +51,7 @@ namespace EduHub.Data.Entities
         private IReadOnlyList<SSHG> Cache_STKEY_SSHG_STUDENT;
         private IReadOnlyList<STAR> Cache_STKEY_STAR_SKEY;
         private IReadOnlyList<STBT> Cache_STKEY_STBT_STBTKEY;
+        private IReadOnlyList<STFLO> Cache_STKEY_STFLO_SKEY;
         private IReadOnlyList<STMA> Cache_STKEY_STMA_SKEY;
         private IReadOnlyList<STMB> Cache_STKEY_STMB_SKEY;
         private IReadOnlyList<STNAT> Cache_STKEY_STNAT_SKEY;
@@ -1240,10 +1241,16 @@ namespace EduHub.Data.Entities
         public string GENDER_DESC { get; internal set; }
 
         /// <summary>
-        /// Student is using the services of a tutor as part of the Tutor Learning Initiative (Y/N)
+        /// Student is using the Literacy services of a tutor as part of the Tutor Learning Initiative (Y/N)
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string DET_TUTOR { get; internal set; }
+
+        /// <summary>
+        /// Student is using the Numeracy services of a tutor as part of the Tutor Learning Initiative (Y/N)
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string DET_TUTORNUM { get; internal set; }
 
         /// <summary>
         /// MYLNS Literacy (Y/N)
@@ -1256,6 +1263,42 @@ namespace EduHub.Data.Entities
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
         public string MYLNS_NUMERACY { get; internal set; }
+
+        /// <summary>
+        /// KLNP Literacy (Y/N)
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string KLNP_LITERACY { get; internal set; }
+
+        /// <summary>
+        /// KLNP Numeracy (Y/N)
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string KLNP_NUMERACY { get; internal set; }
+
+        /// <summary>
+        /// Student Insight (NextGen) unique identifier
+        /// [Alphanumeric (20)]
+        /// </summary>
+        public string STUDENT_SI_ID { get; internal set; }
+
+        /// <summary>
+        /// Student Insight (NextGen) unique identifier
+        /// [Alphanumeric (20)]
+        /// </summary>
+        public string ENROLMENT_SI_ID { get; internal set; }
+
+        /// <summary>
+        /// Student Insight (NextGen) unique identifier
+        /// [Alphanumeric (20)]
+        /// </summary>
+        public string APPLICATION_SI_ID { get; internal set; }
+
+        /// <summary>
+        /// Student has a Flexible Learning Option (FLO)
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string FLO { get; internal set; }
 
         /// <summary>
         /// Last write date
@@ -1947,6 +1990,24 @@ namespace EduHub.Data.Entities
                 }
 
                 return Cache_STKEY_STBT_STBTKEY;
+            }
+        }
+
+        /// <summary>
+        /// STFLO (Student Flexible Learning Options) related entities by [ST.STKEY]-&gt;[STFLO.SKEY]
+        /// Student ID
+        /// </summary>
+        public IReadOnlyList<STFLO> STKEY_STFLO_SKEY
+        {
+            get
+            {
+                if (Cache_STKEY_STFLO_SKEY == null &&
+                    !Context.STFLO.TryFindBySKEY(STKEY, out Cache_STKEY_STFLO_SKEY))
+                {
+                    Cache_STKEY_STFLO_SKEY = new List<STFLO>().AsReadOnly();
+                }
+
+                return Cache_STKEY_STFLO_SKEY;
             }
         }
 

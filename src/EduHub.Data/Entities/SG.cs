@@ -371,6 +371,24 @@ namespace EduHub.Data.Entities
         public string VET { get; internal set; }
 
         /// <summary>
+        /// Voluntary?
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string VOLUNTARY { get; internal set; }
+
+        /// <summary>
+        /// Refund policy
+        /// [Memo]
+        /// </summary>
+        public string REFUND { get; internal set; }
+
+        /// <summary>
+        /// Financial Support Options
+        /// [Memo]
+        /// </summary>
+        public string FINANCIAL_SUPPORT { get; internal set; }
+
+        /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }

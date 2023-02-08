@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>EduHub.Data</RootNamespace>
     <AssemblyName>EduHub.Data</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -78,6 +78,10 @@
     <Compile Include="Entities\CRTTDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\KEMAIL.cs" />
+    <Compile Include="Entities\KEMAILDataSet.cs" />
+    <Compile Include="Entities\KFLO.cs" />
+    <Compile Include="Entities\KFLODataSet.cs" />
     <Compile Include="Entities\KFUND.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
@@ -1655,6 +1659,8 @@
     <Compile Include="Entities\STDataSet.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\STFLO.cs" />
+    <Compile Include="Entities\STFLODataSet.cs" />
     <Compile Include="Entities\STHelpers.cs" />
     <Compile Include="Entities\STMA.cs">
       <DependentUpon>EntityGenerator.tt</DependentUpon>

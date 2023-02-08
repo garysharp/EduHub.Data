@@ -116,14 +116,23 @@ namespace EduHub.Data.Entities
                     case "EMAIL_ADDRESS":
                         mapper[i] = (e, v) => e.EMAIL_ADDRESS = v;
                         break;
-                    case "EMERG_CONTACT":
-                        mapper[i] = (e, v) => e.EMERG_CONTACT = v;
+                    case "EMERG_CONTACT01":
+                        mapper[i] = (e, v) => e.EMERG_CONTACT01 = v;
                         break;
-                    case "EMERG_RELATE":
-                        mapper[i] = (e, v) => e.EMERG_RELATE = v;
+                    case "EMERG_CONTACT02":
+                        mapper[i] = (e, v) => e.EMERG_CONTACT02 = v;
                         break;
-                    case "EMERG_PHONE":
-                        mapper[i] = (e, v) => e.EMERG_PHONE = v;
+                    case "EMERG_RELATE01":
+                        mapper[i] = (e, v) => e.EMERG_RELATE01 = v;
+                        break;
+                    case "EMERG_RELATE02":
+                        mapper[i] = (e, v) => e.EMERG_RELATE02 = v;
+                        break;
+                    case "EMERG_PHONE01":
+                        mapper[i] = (e, v) => e.EMERG_PHONE01 = v;
+                        break;
+                    case "EMERG_PHONE02":
+                        mapper[i] = (e, v) => e.EMERG_PHONE02 = v;
                         break;
                     case "START_DATE":
                         mapper[i] = (e, v) => e.START_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
@@ -295,9 +304,12 @@ BEGIN
         [MOBILE_PHONE] varchar(31) NULL,
         [WORK_PHONE] varchar(24) NULL,
         [EMAIL_ADDRESS] varchar(70) NULL,
-        [EMERG_CONTACT] varchar(50) NULL,
-        [EMERG_RELATE] varchar(30) NULL,
-        [EMERG_PHONE] varchar(24) NULL,
+        [EMERG_CONTACT01] varchar(50) NULL,
+        [EMERG_CONTACT02] varchar(50) NULL,
+        [EMERG_RELATE01] varchar(30) NULL,
+        [EMERG_RELATE02] varchar(30) NULL,
+        [EMERG_PHONE01] varchar(24) NULL,
+        [EMERG_PHONE02] varchar(24) NULL,
         [START_DATE] datetime NULL,
         [FINISH_DATE] datetime NULL,
         [FTE] smallint NULL,
@@ -397,7 +409,7 @@ END");
             {
             }
 
-            public override int FieldCount { get { return 34; } }
+            public override int FieldCount { get { return 37; } }
 
             public override object GetValue(int i)
             {
@@ -455,21 +467,27 @@ END");
                         return Current.WORK_PHONE;
                     case 25: // EMAIL_ADDRESS
                         return Current.EMAIL_ADDRESS;
-                    case 26: // EMERG_CONTACT
-                        return Current.EMERG_CONTACT;
-                    case 27: // EMERG_RELATE
-                        return Current.EMERG_RELATE;
-                    case 28: // EMERG_PHONE
-                        return Current.EMERG_PHONE;
-                    case 29: // START_DATE
+                    case 26: // EMERG_CONTACT01
+                        return Current.EMERG_CONTACT01;
+                    case 27: // EMERG_CONTACT02
+                        return Current.EMERG_CONTACT02;
+                    case 28: // EMERG_RELATE01
+                        return Current.EMERG_RELATE01;
+                    case 29: // EMERG_RELATE02
+                        return Current.EMERG_RELATE02;
+                    case 30: // EMERG_PHONE01
+                        return Current.EMERG_PHONE01;
+                    case 31: // EMERG_PHONE02
+                        return Current.EMERG_PHONE02;
+                    case 32: // START_DATE
                         return Current.START_DATE;
-                    case 30: // FINISH_DATE
+                    case 33: // FINISH_DATE
                         return Current.FINISH_DATE;
-                    case 31: // FTE
+                    case 34: // FTE
                         return Current.FTE;
-                    case 32: // REC_TYPE_FLAG
+                    case 35: // REC_TYPE_FLAG
                         return Current.REC_TYPE_FLAG;
-                    case 33: // REC_PROCESS_FLAG
+                    case 36: // REC_PROCESS_FLAG
                         return Current.REC_PROCESS_FLAG;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -530,21 +548,27 @@ END");
                         return Current.WORK_PHONE == null;
                     case 25: // EMAIL_ADDRESS
                         return Current.EMAIL_ADDRESS == null;
-                    case 26: // EMERG_CONTACT
-                        return Current.EMERG_CONTACT == null;
-                    case 27: // EMERG_RELATE
-                        return Current.EMERG_RELATE == null;
-                    case 28: // EMERG_PHONE
-                        return Current.EMERG_PHONE == null;
-                    case 29: // START_DATE
+                    case 26: // EMERG_CONTACT01
+                        return Current.EMERG_CONTACT01 == null;
+                    case 27: // EMERG_CONTACT02
+                        return Current.EMERG_CONTACT02 == null;
+                    case 28: // EMERG_RELATE01
+                        return Current.EMERG_RELATE01 == null;
+                    case 29: // EMERG_RELATE02
+                        return Current.EMERG_RELATE02 == null;
+                    case 30: // EMERG_PHONE01
+                        return Current.EMERG_PHONE01 == null;
+                    case 31: // EMERG_PHONE02
+                        return Current.EMERG_PHONE02 == null;
+                    case 32: // START_DATE
                         return Current.START_DATE == null;
-                    case 30: // FINISH_DATE
+                    case 33: // FINISH_DATE
                         return Current.FINISH_DATE == null;
-                    case 31: // FTE
+                    case 34: // FTE
                         return Current.FTE == null;
-                    case 32: // REC_TYPE_FLAG
+                    case 35: // REC_TYPE_FLAG
                         return Current.REC_TYPE_FLAG == null;
-                    case 33: // REC_PROCESS_FLAG
+                    case 36: // REC_PROCESS_FLAG
                         return Current.REC_PROCESS_FLAG == null;
                     default:
                         return false;
@@ -607,21 +631,27 @@ END");
                         return "WORK_PHONE";
                     case 25: // EMAIL_ADDRESS
                         return "EMAIL_ADDRESS";
-                    case 26: // EMERG_CONTACT
-                        return "EMERG_CONTACT";
-                    case 27: // EMERG_RELATE
-                        return "EMERG_RELATE";
-                    case 28: // EMERG_PHONE
-                        return "EMERG_PHONE";
-                    case 29: // START_DATE
+                    case 26: // EMERG_CONTACT01
+                        return "EMERG_CONTACT01";
+                    case 27: // EMERG_CONTACT02
+                        return "EMERG_CONTACT02";
+                    case 28: // EMERG_RELATE01
+                        return "EMERG_RELATE01";
+                    case 29: // EMERG_RELATE02
+                        return "EMERG_RELATE02";
+                    case 30: // EMERG_PHONE01
+                        return "EMERG_PHONE01";
+                    case 31: // EMERG_PHONE02
+                        return "EMERG_PHONE02";
+                    case 32: // START_DATE
                         return "START_DATE";
-                    case 30: // FINISH_DATE
+                    case 33: // FINISH_DATE
                         return "FINISH_DATE";
-                    case 31: // FTE
+                    case 34: // FTE
                         return "FTE";
-                    case 32: // REC_TYPE_FLAG
+                    case 35: // REC_TYPE_FLAG
                         return "REC_TYPE_FLAG";
-                    case 33: // REC_PROCESS_FLAG
+                    case 36: // REC_PROCESS_FLAG
                         return "REC_PROCESS_FLAG";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -684,22 +714,28 @@ END");
                         return 24;
                     case "EMAIL_ADDRESS":
                         return 25;
-                    case "EMERG_CONTACT":
+                    case "EMERG_CONTACT01":
                         return 26;
-                    case "EMERG_RELATE":
+                    case "EMERG_CONTACT02":
                         return 27;
-                    case "EMERG_PHONE":
+                    case "EMERG_RELATE01":
                         return 28;
-                    case "START_DATE":
+                    case "EMERG_RELATE02":
                         return 29;
-                    case "FINISH_DATE":
+                    case "EMERG_PHONE01":
                         return 30;
-                    case "FTE":
+                    case "EMERG_PHONE02":
                         return 31;
-                    case "REC_TYPE_FLAG":
+                    case "START_DATE":
                         return 32;
-                    case "REC_PROCESS_FLAG":
+                    case "FINISH_DATE":
                         return 33;
+                    case "FTE":
+                        return 34;
+                    case "REC_TYPE_FLAG":
+                        return 35;
+                    case "REC_PROCESS_FLAG":
+                        return 36;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

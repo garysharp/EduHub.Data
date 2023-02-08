@@ -25,6 +25,7 @@ namespace EduHub.Data.Entities
             : base(Context)
         {
             Index_BSB = new Lazy<NullDictionary<string, IReadOnlyList<CR>>>(() => this.ToGroupedNullDictionary(i => i.BSB));
+            Index_COUNTRY = new Lazy<NullDictionary<string, IReadOnlyList<CR>>>(() => this.ToGroupedNullDictionary(i => i.COUNTRY));
             Index_CRKEY = new Lazy<Dictionary<string, CR>>(() => this.ToDictionary(i => i.CRKEY));
             Index_PPDKEY = new Lazy<NullDictionary<string, IReadOnlyList<CR>>>(() => this.ToGroupedNullDictionary(i => i.PPDKEY));
         }
@@ -108,6 +109,9 @@ namespace EduHub.Data.Entities
                         break;
                     case "POSTCODE":
                         mapper[i] = (e, v) => e.POSTCODE = v;
+                        break;
+                    case "COUNTRY":
+                        mapper[i] = (e, v) => e.COUNTRY = v;
                         break;
                     case "TELEPHONE":
                         mapper[i] = (e, v) => e.TELEPHONE = v;
@@ -316,6 +320,7 @@ namespace EduHub.Data.Entities
         #region Index Fields
 
         private Lazy<NullDictionary<string, IReadOnlyList<CR>>> Index_BSB;
+        private Lazy<NullDictionary<string, IReadOnlyList<CR>>> Index_COUNTRY;
         private Lazy<Dictionary<string, CR>> Index_CRKEY;
         private Lazy<NullDictionary<string, IReadOnlyList<CR>>> Index_PPDKEY;
 
@@ -356,6 +361,48 @@ namespace EduHub.Data.Entities
         {
             IReadOnlyList<CR> value;
             if (Index_BSB.Value.TryGetValue(BSB, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find CR by COUNTRY field
+        /// </summary>
+        /// <param name="COUNTRY">COUNTRY value used to find CR</param>
+        /// <returns>List of related CR entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<CR> FindByCOUNTRY(string COUNTRY)
+        {
+            return Index_COUNTRY.Value[COUNTRY];
+        }
+
+        /// <summary>
+        /// Attempt to find CR by COUNTRY field
+        /// </summary>
+        /// <param name="COUNTRY">COUNTRY value used to find CR</param>
+        /// <param name="Value">List of related CR entities</param>
+        /// <returns>True if the list of related CR entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByCOUNTRY(string COUNTRY, out IReadOnlyList<CR> Value)
+        {
+            return Index_COUNTRY.Value.TryGetValue(COUNTRY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find CR by COUNTRY field
+        /// </summary>
+        /// <param name="COUNTRY">COUNTRY value used to find CR</param>
+        /// <returns>List of related CR entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<CR> TryFindByCOUNTRY(string COUNTRY)
+        {
+            IReadOnlyList<CR> value;
+            if (Index_COUNTRY.Value.TryGetValue(COUNTRY, out value))
             {
                 return value;
             }
@@ -488,6 +535,7 @@ BEGIN
         [ADDRESS03] varchar(40) NULL,
         [STATE] varchar(4) NULL,
         [POSTCODE] varchar(4) NULL,
+        [COUNTRY] varchar(6) NULL,
         [TELEPHONE] varchar(20) NULL,
         [FAX] varchar(20) NULL,
         [CR_EMAIL] varchar(60) NULL,
@@ -543,6 +591,10 @@ BEGIN
     (
             [BSB] ASC
     );
+    CREATE NONCLUSTERED INDEX [CR_Index_COUNTRY] ON [dbo].[CR]
+    (
+            [COUNTRY] ASC
+    );
     CREATE NONCLUSTERED INDEX [CR_Index_PPDKEY] ON [dbo].[CR]
     (
             [PPDKEY] ASC
@@ -564,6 +616,8 @@ END");
                 cmdText:
 @"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CR]') AND name = N'CR_Index_BSB')
     ALTER INDEX [CR_Index_BSB] ON [dbo].[CR] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CR]') AND name = N'CR_Index_COUNTRY')
+    ALTER INDEX [CR_Index_COUNTRY] ON [dbo].[CR] DISABLE;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CR]') AND name = N'CR_Index_PPDKEY')
     ALTER INDEX [CR_Index_PPDKEY] ON [dbo].[CR] DISABLE;
 ");
@@ -581,6 +635,8 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CR]') AND 
                 cmdText:
 @"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CR]') AND name = N'CR_Index_BSB')
     ALTER INDEX [CR_Index_BSB] ON [dbo].[CR] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CR]') AND name = N'CR_Index_COUNTRY')
+    ALTER INDEX [CR_Index_COUNTRY] ON [dbo].[CR] REBUILD PARTITION = ALL;
 IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CR]') AND name = N'CR_Index_PPDKEY')
     ALTER INDEX [CR_Index_PPDKEY] ON [dbo].[CR] REBUILD PARTITION = ALL;
 ");
@@ -653,7 +709,7 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CR]') AND 
             {
             }
 
-            public override int FieldCount { get { return 70; } }
+            public override int FieldCount { get { return 71; } }
 
             public override object GetValue(int i)
             {
@@ -705,99 +761,101 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CR]') AND 
                         return Current.STATE;
                     case 22: // POSTCODE
                         return Current.POSTCODE;
-                    case 23: // TELEPHONE
+                    case 23: // COUNTRY
+                        return Current.COUNTRY;
+                    case 24: // TELEPHONE
                         return Current.TELEPHONE;
-                    case 24: // FAX
+                    case 25: // FAX
                         return Current.FAX;
-                    case 25: // CR_EMAIL
+                    case 26: // CR_EMAIL
                         return Current.CR_EMAIL;
-                    case 26: // EMAIL_FOR_PAYMENTS
+                    case 27: // EMAIL_FOR_PAYMENTS
                         return Current.EMAIL_FOR_PAYMENTS;
-                    case 27: // MOBILE
+                    case 28: // MOBILE
                         return Current.MOBILE;
-                    case 28: // COMMITMENT
+                    case 29: // COMMITMENT
                         return Current.COMMITMENT;
-                    case 29: // STOP_FLAG
+                    case 30: // STOP_FLAG
                         return Current.STOP_FLAG;
-                    case 30: // ABN
+                    case 31: // ABN
                         return Current.ABN;
-                    case 31: // PAYG_RATE
+                    case 32: // PAYG_RATE
                         return Current.PAYG_RATE;
-                    case 32: // BSB
+                    case 33: // BSB
                         return Current.BSB;
-                    case 33: // ACCOUNT_NO
+                    case 34: // ACCOUNT_NO
                         return Current.ACCOUNT_NO;
-                    case 34: // ACCOUNT_NAME
+                    case 35: // ACCOUNT_NAME
                         return Current.ACCOUNT_NAME;
-                    case 35: // LODGE_REF
+                    case 36: // LODGE_REF
                         return Current.LODGE_REF;
-                    case 36: // BILLER_CODE
+                    case 37: // BILLER_CODE
                         return Current.BILLER_CODE;
-                    case 37: // BPAY_REFERENCE
+                    case 38: // BPAY_REFERENCE
                         return Current.BPAY_REFERENCE;
-                    case 38: // TRADE_INFO01
+                    case 39: // TRADE_INFO01
                         return Current.TRADE_INFO01;
-                    case 39: // TRADE_INFO02
+                    case 40: // TRADE_INFO02
                         return Current.TRADE_INFO02;
-                    case 40: // TRADE_INFO03
+                    case 41: // TRADE_INFO03
                         return Current.TRADE_INFO03;
-                    case 41: // TRADE_INFO04
+                    case 42: // TRADE_INFO04
                         return Current.TRADE_INFO04;
-                    case 42: // TRADE_INFO05
+                    case 43: // TRADE_INFO05
                         return Current.TRADE_INFO05;
-                    case 43: // TRADE_INFO06
+                    case 44: // TRADE_INFO06
                         return Current.TRADE_INFO06;
-                    case 44: // TRADE_INFO07
+                    case 45: // TRADE_INFO07
                         return Current.TRADE_INFO07;
-                    case 45: // TRADE_INFO08
+                    case 46: // TRADE_INFO08
                         return Current.TRADE_INFO08;
-                    case 46: // TRADE_INFO09
+                    case 47: // TRADE_INFO09
                         return Current.TRADE_INFO09;
-                    case 47: // TRADE_INFO10
+                    case 48: // TRADE_INFO10
                         return Current.TRADE_INFO10;
-                    case 48: // SURNAME
+                    case 49: // SURNAME
                         return Current.SURNAME;
-                    case 49: // FIRST_NAME
+                    case 50: // FIRST_NAME
                         return Current.FIRST_NAME;
-                    case 50: // SECOND_NAME
+                    case 51: // SECOND_NAME
                         return Current.SECOND_NAME;
-                    case 51: // PAYG_BIRTHDATE
+                    case 52: // PAYG_BIRTHDATE
                         return Current.PAYG_BIRTHDATE;
-                    case 52: // PAYG_STARTDATE
+                    case 53: // PAYG_STARTDATE
                         return Current.PAYG_STARTDATE;
-                    case 53: // PAYG_TERMDATE
+                    case 54: // PAYG_TERMDATE
                         return Current.PAYG_TERMDATE;
-                    case 54: // PAYG_ADDRESS01
+                    case 55: // PAYG_ADDRESS01
                         return Current.PAYG_ADDRESS01;
-                    case 55: // PAYG_ADDRESS02
+                    case 56: // PAYG_ADDRESS02
                         return Current.PAYG_ADDRESS02;
-                    case 56: // PAYG_SUBURB
+                    case 57: // PAYG_SUBURB
                         return Current.PAYG_SUBURB;
-                    case 57: // PAYG_STATE
+                    case 58: // PAYG_STATE
                         return Current.PAYG_STATE;
-                    case 58: // PAYG_POST
+                    case 59: // PAYG_POST
                         return Current.PAYG_POST;
-                    case 59: // PAYG_COUNTRY
+                    case 60: // PAYG_COUNTRY
                         return Current.PAYG_COUNTRY;
-                    case 60: // PPDKEY
+                    case 61: // PPDKEY
                         return Current.PPDKEY;
-                    case 61: // PR_APPROVE
+                    case 62: // PR_APPROVE
                         return Current.PR_APPROVE;
-                    case 62: // PRMS_FLAG
+                    case 63: // PRMS_FLAG
                         return Current.PRMS_FLAG;
-                    case 63: // LW_PRMSINFO_DATE
+                    case 64: // LW_PRMSINFO_DATE
                         return Current.LW_PRMSINFO_DATE;
-                    case 64: // ARN
+                    case 65: // ARN
                         return Current.ARN;
-                    case 65: // KNOTE_FLAG
+                    case 66: // KNOTE_FLAG
                         return Current.KNOTE_FLAG;
-                    case 66: // AIMSKEY
+                    case 67: // AIMSKEY
                         return Current.AIMSKEY;
-                    case 67: // LW_DATE
+                    case 68: // LW_DATE
                         return Current.LW_DATE;
-                    case 68: // LW_TIME
+                    case 69: // LW_TIME
                         return Current.LW_TIME;
-                    case 69: // LW_USER
+                    case 70: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -852,99 +910,101 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CR]') AND 
                         return Current.STATE == null;
                     case 22: // POSTCODE
                         return Current.POSTCODE == null;
-                    case 23: // TELEPHONE
+                    case 23: // COUNTRY
+                        return Current.COUNTRY == null;
+                    case 24: // TELEPHONE
                         return Current.TELEPHONE == null;
-                    case 24: // FAX
+                    case 25: // FAX
                         return Current.FAX == null;
-                    case 25: // CR_EMAIL
+                    case 26: // CR_EMAIL
                         return Current.CR_EMAIL == null;
-                    case 26: // EMAIL_FOR_PAYMENTS
+                    case 27: // EMAIL_FOR_PAYMENTS
                         return Current.EMAIL_FOR_PAYMENTS == null;
-                    case 27: // MOBILE
+                    case 28: // MOBILE
                         return Current.MOBILE == null;
-                    case 28: // COMMITMENT
+                    case 29: // COMMITMENT
                         return Current.COMMITMENT == null;
-                    case 29: // STOP_FLAG
+                    case 30: // STOP_FLAG
                         return Current.STOP_FLAG == null;
-                    case 30: // ABN
+                    case 31: // ABN
                         return Current.ABN == null;
-                    case 31: // PAYG_RATE
+                    case 32: // PAYG_RATE
                         return Current.PAYG_RATE == null;
-                    case 32: // BSB
+                    case 33: // BSB
                         return Current.BSB == null;
-                    case 33: // ACCOUNT_NO
+                    case 34: // ACCOUNT_NO
                         return Current.ACCOUNT_NO == null;
-                    case 34: // ACCOUNT_NAME
+                    case 35: // ACCOUNT_NAME
                         return Current.ACCOUNT_NAME == null;
-                    case 35: // LODGE_REF
+                    case 36: // LODGE_REF
                         return Current.LODGE_REF == null;
-                    case 36: // BILLER_CODE
+                    case 37: // BILLER_CODE
                         return Current.BILLER_CODE == null;
-                    case 37: // BPAY_REFERENCE
+                    case 38: // BPAY_REFERENCE
                         return Current.BPAY_REFERENCE == null;
-                    case 38: // TRADE_INFO01
+                    case 39: // TRADE_INFO01
                         return Current.TRADE_INFO01 == null;
-                    case 39: // TRADE_INFO02
+                    case 40: // TRADE_INFO02
                         return Current.TRADE_INFO02 == null;
-                    case 40: // TRADE_INFO03
+                    case 41: // TRADE_INFO03
                         return Current.TRADE_INFO03 == null;
-                    case 41: // TRADE_INFO04
+                    case 42: // TRADE_INFO04
                         return Current.TRADE_INFO04 == null;
-                    case 42: // TRADE_INFO05
+                    case 43: // TRADE_INFO05
                         return Current.TRADE_INFO05 == null;
-                    case 43: // TRADE_INFO06
+                    case 44: // TRADE_INFO06
                         return Current.TRADE_INFO06 == null;
-                    case 44: // TRADE_INFO07
+                    case 45: // TRADE_INFO07
                         return Current.TRADE_INFO07 == null;
-                    case 45: // TRADE_INFO08
+                    case 46: // TRADE_INFO08
                         return Current.TRADE_INFO08 == null;
-                    case 46: // TRADE_INFO09
+                    case 47: // TRADE_INFO09
                         return Current.TRADE_INFO09 == null;
-                    case 47: // TRADE_INFO10
+                    case 48: // TRADE_INFO10
                         return Current.TRADE_INFO10 == null;
-                    case 48: // SURNAME
+                    case 49: // SURNAME
                         return Current.SURNAME == null;
-                    case 49: // FIRST_NAME
+                    case 50: // FIRST_NAME
                         return Current.FIRST_NAME == null;
-                    case 50: // SECOND_NAME
+                    case 51: // SECOND_NAME
                         return Current.SECOND_NAME == null;
-                    case 51: // PAYG_BIRTHDATE
+                    case 52: // PAYG_BIRTHDATE
                         return Current.PAYG_BIRTHDATE == null;
-                    case 52: // PAYG_STARTDATE
+                    case 53: // PAYG_STARTDATE
                         return Current.PAYG_STARTDATE == null;
-                    case 53: // PAYG_TERMDATE
+                    case 54: // PAYG_TERMDATE
                         return Current.PAYG_TERMDATE == null;
-                    case 54: // PAYG_ADDRESS01
+                    case 55: // PAYG_ADDRESS01
                         return Current.PAYG_ADDRESS01 == null;
-                    case 55: // PAYG_ADDRESS02
+                    case 56: // PAYG_ADDRESS02
                         return Current.PAYG_ADDRESS02 == null;
-                    case 56: // PAYG_SUBURB
+                    case 57: // PAYG_SUBURB
                         return Current.PAYG_SUBURB == null;
-                    case 57: // PAYG_STATE
+                    case 58: // PAYG_STATE
                         return Current.PAYG_STATE == null;
-                    case 58: // PAYG_POST
+                    case 59: // PAYG_POST
                         return Current.PAYG_POST == null;
-                    case 59: // PAYG_COUNTRY
+                    case 60: // PAYG_COUNTRY
                         return Current.PAYG_COUNTRY == null;
-                    case 60: // PPDKEY
+                    case 61: // PPDKEY
                         return Current.PPDKEY == null;
-                    case 61: // PR_APPROVE
+                    case 62: // PR_APPROVE
                         return Current.PR_APPROVE == null;
-                    case 62: // PRMS_FLAG
+                    case 63: // PRMS_FLAG
                         return Current.PRMS_FLAG == null;
-                    case 63: // LW_PRMSINFO_DATE
+                    case 64: // LW_PRMSINFO_DATE
                         return Current.LW_PRMSINFO_DATE == null;
-                    case 64: // ARN
+                    case 65: // ARN
                         return Current.ARN == null;
-                    case 65: // KNOTE_FLAG
+                    case 66: // KNOTE_FLAG
                         return Current.KNOTE_FLAG == null;
-                    case 66: // AIMSKEY
+                    case 67: // AIMSKEY
                         return Current.AIMSKEY == null;
-                    case 67: // LW_DATE
+                    case 68: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 68: // LW_TIME
+                    case 69: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 69: // LW_USER
+                    case 70: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -1001,99 +1061,101 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CR]') AND 
                         return "STATE";
                     case 22: // POSTCODE
                         return "POSTCODE";
-                    case 23: // TELEPHONE
+                    case 23: // COUNTRY
+                        return "COUNTRY";
+                    case 24: // TELEPHONE
                         return "TELEPHONE";
-                    case 24: // FAX
+                    case 25: // FAX
                         return "FAX";
-                    case 25: // CR_EMAIL
+                    case 26: // CR_EMAIL
                         return "CR_EMAIL";
-                    case 26: // EMAIL_FOR_PAYMENTS
+                    case 27: // EMAIL_FOR_PAYMENTS
                         return "EMAIL_FOR_PAYMENTS";
-                    case 27: // MOBILE
+                    case 28: // MOBILE
                         return "MOBILE";
-                    case 28: // COMMITMENT
+                    case 29: // COMMITMENT
                         return "COMMITMENT";
-                    case 29: // STOP_FLAG
+                    case 30: // STOP_FLAG
                         return "STOP_FLAG";
-                    case 30: // ABN
+                    case 31: // ABN
                         return "ABN";
-                    case 31: // PAYG_RATE
+                    case 32: // PAYG_RATE
                         return "PAYG_RATE";
-                    case 32: // BSB
+                    case 33: // BSB
                         return "BSB";
-                    case 33: // ACCOUNT_NO
+                    case 34: // ACCOUNT_NO
                         return "ACCOUNT_NO";
-                    case 34: // ACCOUNT_NAME
+                    case 35: // ACCOUNT_NAME
                         return "ACCOUNT_NAME";
-                    case 35: // LODGE_REF
+                    case 36: // LODGE_REF
                         return "LODGE_REF";
-                    case 36: // BILLER_CODE
+                    case 37: // BILLER_CODE
                         return "BILLER_CODE";
-                    case 37: // BPAY_REFERENCE
+                    case 38: // BPAY_REFERENCE
                         return "BPAY_REFERENCE";
-                    case 38: // TRADE_INFO01
+                    case 39: // TRADE_INFO01
                         return "TRADE_INFO01";
-                    case 39: // TRADE_INFO02
+                    case 40: // TRADE_INFO02
                         return "TRADE_INFO02";
-                    case 40: // TRADE_INFO03
+                    case 41: // TRADE_INFO03
                         return "TRADE_INFO03";
-                    case 41: // TRADE_INFO04
+                    case 42: // TRADE_INFO04
                         return "TRADE_INFO04";
-                    case 42: // TRADE_INFO05
+                    case 43: // TRADE_INFO05
                         return "TRADE_INFO05";
-                    case 43: // TRADE_INFO06
+                    case 44: // TRADE_INFO06
                         return "TRADE_INFO06";
-                    case 44: // TRADE_INFO07
+                    case 45: // TRADE_INFO07
                         return "TRADE_INFO07";
-                    case 45: // TRADE_INFO08
+                    case 46: // TRADE_INFO08
                         return "TRADE_INFO08";
-                    case 46: // TRADE_INFO09
+                    case 47: // TRADE_INFO09
                         return "TRADE_INFO09";
-                    case 47: // TRADE_INFO10
+                    case 48: // TRADE_INFO10
                         return "TRADE_INFO10";
-                    case 48: // SURNAME
+                    case 49: // SURNAME
                         return "SURNAME";
-                    case 49: // FIRST_NAME
+                    case 50: // FIRST_NAME
                         return "FIRST_NAME";
-                    case 50: // SECOND_NAME
+                    case 51: // SECOND_NAME
                         return "SECOND_NAME";
-                    case 51: // PAYG_BIRTHDATE
+                    case 52: // PAYG_BIRTHDATE
                         return "PAYG_BIRTHDATE";
-                    case 52: // PAYG_STARTDATE
+                    case 53: // PAYG_STARTDATE
                         return "PAYG_STARTDATE";
-                    case 53: // PAYG_TERMDATE
+                    case 54: // PAYG_TERMDATE
                         return "PAYG_TERMDATE";
-                    case 54: // PAYG_ADDRESS01
+                    case 55: // PAYG_ADDRESS01
                         return "PAYG_ADDRESS01";
-                    case 55: // PAYG_ADDRESS02
+                    case 56: // PAYG_ADDRESS02
                         return "PAYG_ADDRESS02";
-                    case 56: // PAYG_SUBURB
+                    case 57: // PAYG_SUBURB
                         return "PAYG_SUBURB";
-                    case 57: // PAYG_STATE
+                    case 58: // PAYG_STATE
                         return "PAYG_STATE";
-                    case 58: // PAYG_POST
+                    case 59: // PAYG_POST
                         return "PAYG_POST";
-                    case 59: // PAYG_COUNTRY
+                    case 60: // PAYG_COUNTRY
                         return "PAYG_COUNTRY";
-                    case 60: // PPDKEY
+                    case 61: // PPDKEY
                         return "PPDKEY";
-                    case 61: // PR_APPROVE
+                    case 62: // PR_APPROVE
                         return "PR_APPROVE";
-                    case 62: // PRMS_FLAG
+                    case 63: // PRMS_FLAG
                         return "PRMS_FLAG";
-                    case 63: // LW_PRMSINFO_DATE
+                    case 64: // LW_PRMSINFO_DATE
                         return "LW_PRMSINFO_DATE";
-                    case 64: // ARN
+                    case 65: // ARN
                         return "ARN";
-                    case 65: // KNOTE_FLAG
+                    case 66: // KNOTE_FLAG
                         return "KNOTE_FLAG";
-                    case 66: // AIMSKEY
+                    case 67: // AIMSKEY
                         return "AIMSKEY";
-                    case 67: // LW_DATE
+                    case 68: // LW_DATE
                         return "LW_DATE";
-                    case 68: // LW_TIME
+                    case 69: // LW_TIME
                         return "LW_TIME";
-                    case 69: // LW_USER
+                    case 70: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -1150,100 +1212,102 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[CR]') AND 
                         return 21;
                     case "POSTCODE":
                         return 22;
-                    case "TELEPHONE":
+                    case "COUNTRY":
                         return 23;
-                    case "FAX":
+                    case "TELEPHONE":
                         return 24;
-                    case "CR_EMAIL":
+                    case "FAX":
                         return 25;
-                    case "EMAIL_FOR_PAYMENTS":
+                    case "CR_EMAIL":
                         return 26;
-                    case "MOBILE":
+                    case "EMAIL_FOR_PAYMENTS":
                         return 27;
-                    case "COMMITMENT":
+                    case "MOBILE":
                         return 28;
-                    case "STOP_FLAG":
+                    case "COMMITMENT":
                         return 29;
-                    case "ABN":
+                    case "STOP_FLAG":
                         return 30;
-                    case "PAYG_RATE":
+                    case "ABN":
                         return 31;
-                    case "BSB":
+                    case "PAYG_RATE":
                         return 32;
-                    case "ACCOUNT_NO":
+                    case "BSB":
                         return 33;
-                    case "ACCOUNT_NAME":
+                    case "ACCOUNT_NO":
                         return 34;
-                    case "LODGE_REF":
+                    case "ACCOUNT_NAME":
                         return 35;
-                    case "BILLER_CODE":
+                    case "LODGE_REF":
                         return 36;
-                    case "BPAY_REFERENCE":
+                    case "BILLER_CODE":
                         return 37;
-                    case "TRADE_INFO01":
+                    case "BPAY_REFERENCE":
                         return 38;
-                    case "TRADE_INFO02":
+                    case "TRADE_INFO01":
                         return 39;
-                    case "TRADE_INFO03":
+                    case "TRADE_INFO02":
                         return 40;
-                    case "TRADE_INFO04":
+                    case "TRADE_INFO03":
                         return 41;
-                    case "TRADE_INFO05":
+                    case "TRADE_INFO04":
                         return 42;
-                    case "TRADE_INFO06":
+                    case "TRADE_INFO05":
                         return 43;
-                    case "TRADE_INFO07":
+                    case "TRADE_INFO06":
                         return 44;
-                    case "TRADE_INFO08":
+                    case "TRADE_INFO07":
                         return 45;
-                    case "TRADE_INFO09":
+                    case "TRADE_INFO08":
                         return 46;
-                    case "TRADE_INFO10":
+                    case "TRADE_INFO09":
                         return 47;
-                    case "SURNAME":
+                    case "TRADE_INFO10":
                         return 48;
-                    case "FIRST_NAME":
+                    case "SURNAME":
                         return 49;
-                    case "SECOND_NAME":
+                    case "FIRST_NAME":
                         return 50;
-                    case "PAYG_BIRTHDATE":
+                    case "SECOND_NAME":
                         return 51;
-                    case "PAYG_STARTDATE":
+                    case "PAYG_BIRTHDATE":
                         return 52;
-                    case "PAYG_TERMDATE":
+                    case "PAYG_STARTDATE":
                         return 53;
-                    case "PAYG_ADDRESS01":
+                    case "PAYG_TERMDATE":
                         return 54;
-                    case "PAYG_ADDRESS02":
+                    case "PAYG_ADDRESS01":
                         return 55;
-                    case "PAYG_SUBURB":
+                    case "PAYG_ADDRESS02":
                         return 56;
-                    case "PAYG_STATE":
+                    case "PAYG_SUBURB":
                         return 57;
-                    case "PAYG_POST":
+                    case "PAYG_STATE":
                         return 58;
-                    case "PAYG_COUNTRY":
+                    case "PAYG_POST":
                         return 59;
-                    case "PPDKEY":
+                    case "PAYG_COUNTRY":
                         return 60;
-                    case "PR_APPROVE":
+                    case "PPDKEY":
                         return 61;
-                    case "PRMS_FLAG":
+                    case "PR_APPROVE":
                         return 62;
-                    case "LW_PRMSINFO_DATE":
+                    case "PRMS_FLAG":
                         return 63;
-                    case "ARN":
+                    case "LW_PRMSINFO_DATE":
                         return 64;
-                    case "KNOTE_FLAG":
+                    case "ARN":
                         return 65;
-                    case "AIMSKEY":
+                    case "KNOTE_FLAG":
                         return 66;
-                    case "LW_DATE":
+                    case "AIMSKEY":
                         return 67;
-                    case "LW_TIME":
+                    case "LW_DATE":
                         return 68;
-                    case "LW_USER":
+                    case "LW_TIME":
                         return 69;
+                    case "LW_USER":
+                        return 70;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

@@ -409,6 +409,15 @@ namespace EduHub.Data.Entities
                     case "IMP_DATE":
                         mapper[i] = (e, v) => e.IMP_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
+                    case "PARENT_A_SI_ID":
+                        mapper[i] = (e, v) => e.PARENT_A_SI_ID = v;
+                        break;
+                    case "PARENT_B_SI_ID":
+                        mapper[i] = (e, v) => e.PARENT_B_SI_ID = v;
+                        break;
+                    case "HEALTH_SUM_SI_ID":
+                        mapper[i] = (e, v) => e.HEALTH_SUM_SI_ID = v;
+                        break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
@@ -759,6 +768,9 @@ BEGIN
         [KCD_TRANS_ID] varchar(30) NULL,
         [IMP_STATUS] varchar(15) NULL,
         [IMP_DATE] datetime NULL,
+        [PARENT_A_SI_ID] varchar(20) NULL,
+        [PARENT_B_SI_ID] varchar(20) NULL,
+        [HEALTH_SUM_SI_ID] varchar(20) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,
@@ -896,7 +908,7 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF_TFR]') 
             {
             }
 
-            public override int FieldCount { get { return 126; } }
+            public override int FieldCount { get { return 129; } }
 
             public override object GetValue(int i)
             {
@@ -1148,11 +1160,17 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF_TFR]') 
                         return Current.IMP_STATUS;
                     case 122: // IMP_DATE
                         return Current.IMP_DATE;
-                    case 123: // LW_DATE
+                    case 123: // PARENT_A_SI_ID
+                        return Current.PARENT_A_SI_ID;
+                    case 124: // PARENT_B_SI_ID
+                        return Current.PARENT_B_SI_ID;
+                    case 125: // HEALTH_SUM_SI_ID
+                        return Current.HEALTH_SUM_SI_ID;
+                    case 126: // LW_DATE
                         return Current.LW_DATE;
-                    case 124: // LW_TIME
+                    case 127: // LW_TIME
                         return Current.LW_TIME;
-                    case 125: // LW_USER
+                    case 128: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -1405,11 +1423,17 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF_TFR]') 
                         return Current.IMP_STATUS == null;
                     case 122: // IMP_DATE
                         return Current.IMP_DATE == null;
-                    case 123: // LW_DATE
+                    case 123: // PARENT_A_SI_ID
+                        return Current.PARENT_A_SI_ID == null;
+                    case 124: // PARENT_B_SI_ID
+                        return Current.PARENT_B_SI_ID == null;
+                    case 125: // HEALTH_SUM_SI_ID
+                        return Current.HEALTH_SUM_SI_ID == null;
+                    case 126: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 124: // LW_TIME
+                    case 127: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 125: // LW_USER
+                    case 128: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -1666,11 +1690,17 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF_TFR]') 
                         return "IMP_STATUS";
                     case 122: // IMP_DATE
                         return "IMP_DATE";
-                    case 123: // LW_DATE
+                    case 123: // PARENT_A_SI_ID
+                        return "PARENT_A_SI_ID";
+                    case 124: // PARENT_B_SI_ID
+                        return "PARENT_B_SI_ID";
+                    case 125: // HEALTH_SUM_SI_ID
+                        return "HEALTH_SUM_SI_ID";
+                    case 126: // LW_DATE
                         return "LW_DATE";
-                    case 124: // LW_TIME
+                    case 127: // LW_TIME
                         return "LW_TIME";
-                    case 125: // LW_USER
+                    case 128: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -1927,12 +1957,18 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DF_TFR]') 
                         return 121;
                     case "IMP_DATE":
                         return 122;
-                    case "LW_DATE":
+                    case "PARENT_A_SI_ID":
                         return 123;
-                    case "LW_TIME":
+                    case "PARENT_B_SI_ID":
                         return 124;
-                    case "LW_USER":
+                    case "HEALTH_SUM_SI_ID":
                         return 125;
+                    case "LW_DATE":
+                        return 126;
+                    case "LW_TIME":
+                        return 127;
+                    case "LW_USER":
+                        return 128;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

@@ -24,6 +24,7 @@ namespace EduHub.Data.Entities
         internal AIMSDataSet(EduHubContext Context)
             : base(Context)
         {
+            Index_AIMSKEY = new Lazy<NullDictionary<string, IReadOnlyList<AIMS>>>(() => this.ToGroupedNullDictionary(i => i.AIMSKEY));
             Index_TID = new Lazy<Dictionary<int, AIMS>>(() => this.ToDictionary(i => i.TID));
         }
 
@@ -119,6 +120,12 @@ namespace EduHub.Data.Entities
                     case "TRQTY":
                         mapper[i] = (e, v) => e.TRQTY = v == null ? (short?)null : short.Parse(v);
                         break;
+                    case "MATCHABLE":
+                        mapper[i] = (e, v) => e.MATCHABLE = v;
+                        break;
+                    case "MATCH_OUTCOME":
+                        mapper[i] = (e, v) => e.MATCH_OUTCOME = v;
+                        break;
                     case "DELETE_FLAG":
                         mapper[i] = (e, v) => e.DELETE_FLAG = v;
                         break;
@@ -196,11 +203,54 @@ namespace EduHub.Data.Entities
 
         #region Index Fields
 
+        private Lazy<NullDictionary<string, IReadOnlyList<AIMS>>> Index_AIMSKEY;
         private Lazy<Dictionary<int, AIMS>> Index_TID;
 
         #endregion
 
         #region Index Methods
+
+        /// <summary>
+        /// Find AIMS by AIMSKEY field
+        /// </summary>
+        /// <param name="AIMSKEY">AIMSKEY value used to find AIMS</param>
+        /// <returns>List of related AIMS entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<AIMS> FindByAIMSKEY(string AIMSKEY)
+        {
+            return Index_AIMSKEY.Value[AIMSKEY];
+        }
+
+        /// <summary>
+        /// Attempt to find AIMS by AIMSKEY field
+        /// </summary>
+        /// <param name="AIMSKEY">AIMSKEY value used to find AIMS</param>
+        /// <param name="Value">List of related AIMS entities</param>
+        /// <returns>True if the list of related AIMS entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByAIMSKEY(string AIMSKEY, out IReadOnlyList<AIMS> Value)
+        {
+            return Index_AIMSKEY.Value.TryGetValue(AIMSKEY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find AIMS by AIMSKEY field
+        /// </summary>
+        /// <param name="AIMSKEY">AIMSKEY value used to find AIMS</param>
+        /// <returns>List of related AIMS entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<AIMS> TryFindByAIMSKEY(string AIMSKEY)
+        {
+            IReadOnlyList<AIMS> value;
+            if (Index_AIMSKEY.Value.TryGetValue(AIMSKEY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         /// <summary>
         /// Find AIMS by TID field
@@ -287,6 +337,8 @@ BEGIN
         [GST_RATE] float NULL,
         [GST_CA] varchar(20) NULL,
         [TRQTY] smallint NULL,
+        [MATCHABLE] varchar(1) NULL,
+        [MATCH_OUTCOME] varchar(1) NULL,
         [DELETE_FLAG] varchar(1) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
@@ -295,27 +347,43 @@ BEGIN
             [TID] ASC
         )
     );
+    CREATE NONCLUSTERED INDEX [AIMS_Index_AIMSKEY] ON [dbo].[AIMS]
+    (
+            [AIMSKEY] ASC
+    );
 END");
         }
 
         /// <summary>
-        /// Returns null as <see cref="AIMSDataSet"/> has no non-clustered indexes.
+        /// Returns a <see cref="SqlCommand"/> which disables all non-clustered table indexes.
+        /// Typically called before <see cref="SqlBulkCopy"/> to improve performance.
+        /// <see cref="GetSqlRebuildIndexesCommand(SqlConnection)"/> should be called to rebuild and enable indexes after performance sensitive work is completed.
         /// </summary>
         /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
-        /// <returns>null</returns>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will disable all non-clustered table indexes</returns>
         public override SqlCommand GetSqlDisableIndexesCommand(SqlConnection SqlConnection)
         {
-            return null;
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AIMS]') AND name = N'AIMS_Index_AIMSKEY')
+    ALTER INDEX [AIMS_Index_AIMSKEY] ON [dbo].[AIMS] DISABLE;
+");
         }
 
         /// <summary>
-        /// Returns null as <see cref="AIMSDataSet"/> has no non-clustered indexes.
+        /// Returns a <see cref="SqlCommand"/> which rebuilds and enables all non-clustered table indexes.
         /// </summary>
         /// <param name="SqlConnection">The <see cref="SqlConnection"/> to be associated with the <see cref="SqlCommand"/></param>
-        /// <returns>null</returns>
+        /// <returns>A <see cref="SqlCommand"/> which (when executed) will rebuild and enable all non-clustered table indexes</returns>
         public override SqlCommand GetSqlRebuildIndexesCommand(SqlConnection SqlConnection)
         {
-            return null;
+            return new SqlCommand(
+                connection: SqlConnection,
+                cmdText:
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AIMS]') AND name = N'AIMS_Index_AIMSKEY')
+    ALTER INDEX [AIMS_Index_AIMSKEY] ON [dbo].[AIMS] REBUILD PARTITION = ALL;
+");
         }
 
         /// <summary>
@@ -385,7 +453,7 @@ END");
             {
             }
 
-            public override int FieldCount { get { return 31; } }
+            public override int FieldCount { get { return 33; } }
 
             public override object GetValue(int i)
             {
@@ -445,13 +513,17 @@ END");
                         return Current.GST_CA;
                     case 26: // TRQTY
                         return Current.TRQTY;
-                    case 27: // DELETE_FLAG
+                    case 27: // MATCHABLE
+                        return Current.MATCHABLE;
+                    case 28: // MATCH_OUTCOME
+                        return Current.MATCH_OUTCOME;
+                    case 29: // DELETE_FLAG
                         return Current.DELETE_FLAG;
-                    case 28: // LW_DATE
+                    case 30: // LW_DATE
                         return Current.LW_DATE;
-                    case 29: // LW_TIME
+                    case 31: // LW_TIME
                         return Current.LW_TIME;
-                    case 30: // LW_USER
+                    case 32: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -514,13 +586,17 @@ END");
                         return Current.GST_CA == null;
                     case 26: // TRQTY
                         return Current.TRQTY == null;
-                    case 27: // DELETE_FLAG
+                    case 27: // MATCHABLE
+                        return Current.MATCHABLE == null;
+                    case 28: // MATCH_OUTCOME
+                        return Current.MATCH_OUTCOME == null;
+                    case 29: // DELETE_FLAG
                         return Current.DELETE_FLAG == null;
-                    case 28: // LW_DATE
+                    case 30: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 29: // LW_TIME
+                    case 31: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 30: // LW_USER
+                    case 32: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -585,13 +661,17 @@ END");
                         return "GST_CA";
                     case 26: // TRQTY
                         return "TRQTY";
-                    case 27: // DELETE_FLAG
+                    case 27: // MATCHABLE
+                        return "MATCHABLE";
+                    case 28: // MATCH_OUTCOME
+                        return "MATCH_OUTCOME";
+                    case 29: // DELETE_FLAG
                         return "DELETE_FLAG";
-                    case 28: // LW_DATE
+                    case 30: // LW_DATE
                         return "LW_DATE";
-                    case 29: // LW_TIME
+                    case 31: // LW_TIME
                         return "LW_TIME";
-                    case 30: // LW_USER
+                    case 32: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -656,14 +736,18 @@ END");
                         return 25;
                     case "TRQTY":
                         return 26;
-                    case "DELETE_FLAG":
+                    case "MATCHABLE":
                         return 27;
-                    case "LW_DATE":
+                    case "MATCH_OUTCOME":
                         return 28;
-                    case "LW_TIME":
+                    case "DELETE_FLAG":
                         return 29;
-                    case "LW_USER":
+                    case "LW_DATE":
                         return 30;
+                    case "LW_TIME":
+                        return 31;
+                    case "LW_USER":
+                        return 32;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

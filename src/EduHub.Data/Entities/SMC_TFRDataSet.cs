@@ -168,6 +168,12 @@ namespace EduHub.Data.Entities
                     case "IMP_DATE":
                         mapper[i] = (e, v) => e.IMP_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
+                    case "HEALTH_INFO_SI_ID":
+                        mapper[i] = (e, v) => e.HEALTH_INFO_SI_ID = v;
+                        break;
+                    case "ALERT":
+                        mapper[i] = (e, v) => e.ALERT = v;
+                        break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
@@ -366,7 +372,7 @@ BEGIN
         [REGULAR_DOSAGE] varchar(30) NULL,
         [REGULAR_FREQUENCY] varchar(15) NULL,
         [REGULAR_DOSAGE_TIME] varchar(15) NULL,
-        [REGULAR_MEDICATION_LOCAT] varchar(30) NULL,
+        [REGULAR_MEDICATION_LOCAT] varchar(100) NULL,
         [REGULAR_ADMIN_BY] varchar(7) NULL,
         [REMINDER] varchar(1) NULL,
         [INFORM_DOCTOR] varchar(1) NULL,
@@ -378,7 +384,7 @@ BEGIN
         [AD_HOC_POISON_RATING] varchar(2) NULL,
         [AD_HOC_DOSAGE] varchar(30) NULL,
         [AD_HOC_FREQUENCY] varchar(15) NULL,
-        [AD_HOC_MEDICATION_LOCAT] varchar(30) NULL,
+        [AD_HOC_MEDICATION_LOCAT] varchar(100) NULL,
         [AD_HOC_ADMIN_BY] varchar(7) NULL,
         [HOME_MEDICATION] varchar(60) NULL,
         [ASTHMA_WHEEZE] varchar(1) NULL,
@@ -392,6 +398,8 @@ BEGIN
         [KCM_TRANS_ID] varchar(30) NULL,
         [IMP_STATUS] varchar(15) NULL,
         [IMP_DATE] datetime NULL,
+        [HEALTH_INFO_SI_ID] varchar(20) NULL,
+        [ALERT] varchar(1) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,
@@ -505,7 +513,7 @@ END");
             {
             }
 
-            public override int FieldCount { get { return 46; } }
+            public override int FieldCount { get { return 48; } }
 
             public override object GetValue(int i)
             {
@@ -597,11 +605,15 @@ END");
                         return Current.IMP_STATUS;
                     case 42: // IMP_DATE
                         return Current.IMP_DATE;
-                    case 43: // LW_DATE
+                    case 43: // HEALTH_INFO_SI_ID
+                        return Current.HEALTH_INFO_SI_ID;
+                    case 44: // ALERT
+                        return Current.ALERT;
+                    case 45: // LW_DATE
                         return Current.LW_DATE;
-                    case 44: // LW_TIME
+                    case 46: // LW_TIME
                         return Current.LW_TIME;
-                    case 45: // LW_USER
+                    case 47: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -694,11 +706,15 @@ END");
                         return Current.IMP_STATUS == null;
                     case 42: // IMP_DATE
                         return Current.IMP_DATE == null;
-                    case 43: // LW_DATE
+                    case 43: // HEALTH_INFO_SI_ID
+                        return Current.HEALTH_INFO_SI_ID == null;
+                    case 44: // ALERT
+                        return Current.ALERT == null;
+                    case 45: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 44: // LW_TIME
+                    case 46: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 45: // LW_USER
+                    case 47: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -795,11 +811,15 @@ END");
                         return "IMP_STATUS";
                     case 42: // IMP_DATE
                         return "IMP_DATE";
-                    case 43: // LW_DATE
+                    case 43: // HEALTH_INFO_SI_ID
+                        return "HEALTH_INFO_SI_ID";
+                    case 44: // ALERT
+                        return "ALERT";
+                    case 45: // LW_DATE
                         return "LW_DATE";
-                    case 44: // LW_TIME
+                    case 46: // LW_TIME
                         return "LW_TIME";
-                    case 45: // LW_USER
+                    case 47: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -896,12 +916,16 @@ END");
                         return 41;
                     case "IMP_DATE":
                         return 42;
-                    case "LW_DATE":
+                    case "HEALTH_INFO_SI_ID":
                         return 43;
-                    case "LW_TIME":
+                    case "ALERT":
                         return 44;
-                    case "LW_USER":
+                    case "LW_DATE":
                         return 45;
+                    case "LW_TIME":
+                        return 46;
+                    case "LW_USER":
+                        return 47;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

@@ -104,6 +104,9 @@ namespace EduHub.Data.Entities
                     case "COMMENTS":
                         mapper[i] = (e, v) => e.COMMENTS = v;
                         break;
+                    case "LAST_RECONCILE_COMMENT":
+                        mapper[i] = (e, v) => e.LAST_RECONCILE_COMMENT = v;
+                        break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
@@ -264,6 +267,7 @@ BEGIN
         [MATURITY_DATE] datetime NULL,
         [INTEREST_EARNED] money NULL,
         [COMMENTS] varchar(200) NULL,
+        [LAST_RECONCILE_COMMENT] varchar(MAX) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,
@@ -361,7 +365,7 @@ END");
             {
             }
 
-            public override int FieldCount { get { return 25; } }
+            public override int FieldCount { get { return 26; } }
 
             public override object GetValue(int i)
             {
@@ -411,11 +415,13 @@ END");
                         return Current.INTEREST_EARNED;
                     case 21: // COMMENTS
                         return Current.COMMENTS;
-                    case 22: // LW_DATE
+                    case 22: // LAST_RECONCILE_COMMENT
+                        return Current.LAST_RECONCILE_COMMENT;
+                    case 23: // LW_DATE
                         return Current.LW_DATE;
-                    case 23: // LW_TIME
+                    case 24: // LW_TIME
                         return Current.LW_TIME;
-                    case 24: // LW_USER
+                    case 25: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -468,11 +474,13 @@ END");
                         return Current.INTEREST_EARNED == null;
                     case 21: // COMMENTS
                         return Current.COMMENTS == null;
-                    case 22: // LW_DATE
+                    case 22: // LAST_RECONCILE_COMMENT
+                        return Current.LAST_RECONCILE_COMMENT == null;
+                    case 23: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 23: // LW_TIME
+                    case 24: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 24: // LW_USER
+                    case 25: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -527,11 +535,13 @@ END");
                         return "INTEREST_EARNED";
                     case 21: // COMMENTS
                         return "COMMENTS";
-                    case 22: // LW_DATE
+                    case 22: // LAST_RECONCILE_COMMENT
+                        return "LAST_RECONCILE_COMMENT";
+                    case 23: // LW_DATE
                         return "LW_DATE";
-                    case 23: // LW_TIME
+                    case 24: // LW_TIME
                         return "LW_TIME";
-                    case 24: // LW_USER
+                    case 25: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -586,12 +596,14 @@ END");
                         return 20;
                     case "COMMENTS":
                         return 21;
-                    case "LW_DATE":
+                    case "LAST_RECONCILE_COMMENT":
                         return 22;
-                    case "LW_TIME":
+                    case "LW_DATE":
                         return 23;
-                    case "LW_USER":
+                    case "LW_TIME":
                         return 24;
+                    case "LW_USER":
+                        return 25;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

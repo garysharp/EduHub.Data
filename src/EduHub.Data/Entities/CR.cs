@@ -13,6 +13,7 @@ namespace EduHub.Data.Entities
 
         #region Navigation Property Cache
 
+        private KGT Cache_COUNTRY_KGT;
         private KAB Cache_BSB_KAB;
         private PPD Cache_PPDKEY_PPD;
 
@@ -166,6 +167,12 @@ namespace EduHub.Data.Entities
         /// [Alphanumeric (4)]
         /// </summary>
         public string POSTCODE { get; internal set; }
+
+        /// <summary>
+        /// Country (default '1101' code for Australia)
+        /// [Uppercase Alphanumeric (6)]
+        /// </summary>
+        public string COUNTRY { get; internal set; }
 
         /// <summary>
         /// Phone number
@@ -444,6 +451,27 @@ namespace EduHub.Data.Entities
         #endregion
 
         #region Navigation Properties
+
+        /// <summary>
+        /// KGT (Countries) related entity by [CR.COUNTRY]-&gt;[KGT.COUNTRY]
+        /// Country (default '1101' code for Australia)
+        /// </summary>
+        public KGT COUNTRY_KGT
+        {
+            get
+            {
+                if (COUNTRY == null)
+                {
+                    return null;
+                }
+                if (Cache_COUNTRY_KGT == null)
+                {
+                    Cache_COUNTRY_KGT = Context.KGT.FindByCOUNTRY(COUNTRY);
+                }
+
+                return Cache_COUNTRY_KGT;
+            }
+        }
 
         /// <summary>
         /// KAB (BSB Numbers) related entity by [CR.BSB]-&gt;[KAB.BSB]

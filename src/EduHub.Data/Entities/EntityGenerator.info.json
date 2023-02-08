@@ -841,6 +841,18 @@
       "Properties": {}
     },
     {
+      "Filename": "KEMAILDataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KEMAIL.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
       "Filename": "KERRORDataSet.cs",
       "Project": null,
       "Path": "Entities",
@@ -848,6 +860,18 @@
     },
     {
       "Filename": "KERROR.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KFLODataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "KFLO.cs",
       "Project": null,
       "Path": "Entities",
       "Properties": {}
@@ -3164,6 +3188,18 @@
     },
     {
       "Filename": "STBT.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STFLODataSet.cs",
+      "Project": null,
+      "Path": "Entities",
+      "Properties": {}
+    },
+    {
+      "Filename": "STFLO.cs",
       "Project": null,
       "Path": "Entities",
       "Properties": {}

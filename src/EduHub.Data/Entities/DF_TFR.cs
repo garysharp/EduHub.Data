@@ -749,6 +749,24 @@ namespace EduHub.Data.Entities
         public DateTime? IMP_DATE { get; internal set; }
 
         /// <summary>
+        /// Student Insight (NextGen) unique identifier
+        /// [Alphanumeric (20)]
+        /// </summary>
+        public string PARENT_A_SI_ID { get; internal set; }
+
+        /// <summary>
+        /// Student Insight (NextGen) unique identifier
+        /// [Alphanumeric (20)]
+        /// </summary>
+        public string PARENT_B_SI_ID { get; internal set; }
+
+        /// <summary>
+        /// Student Insight (NextGen) unique identifier
+        /// [Alphanumeric (20)]
+        /// </summary>
+        public string HEALTH_SUM_SI_ID { get; internal set; }
+
+        /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }

@@ -179,6 +179,23 @@ namespace EduHub.Data.Entities
         public short? TRQTY { get; internal set; }
 
         /// <summary>
+        /// Can be manually matched with a CR record
+        /// This controls an aims record appearing on the matching/creation display
+        /// Possible values are;
+        /// Y - Eligible for manual matching/creation
+        /// P - Already processed
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string MATCHABLE { get; internal set; }
+
+        /// <summary>
+        /// C = New creditor created
+        /// M = Manually matched.
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string MATCH_OUTCOME { get; internal set; }
+
+        /// <summary>
         /// Delete flag
         /// [Uppercase Alphanumeric (1)]
         /// </summary>

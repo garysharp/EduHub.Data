@@ -24,8 +24,10 @@ namespace EduHub.Data.Entities
         internal DRDataSet(EduHubContext Context)
             : base(Context)
         {
+            Index_BUSCOUNTRY = new Lazy<NullDictionary<string, IReadOnlyList<DR>>>(() => this.ToGroupedNullDictionary(i => i.BUSCOUNTRY));
             Index_DRKEY = new Lazy<Dictionary<string, DR>>(() => this.ToDictionary(i => i.DRKEY));
             Index_DRTABLEA = new Lazy<NullDictionary<string, IReadOnlyList<DR>>>(() => this.ToGroupedNullDictionary(i => i.DRTABLEA));
+            Index_MAILCOUNTRY = new Lazy<NullDictionary<string, IReadOnlyList<DR>>>(() => this.ToGroupedNullDictionary(i => i.MAILCOUNTRY));
         }
 
         /// <summary>
@@ -99,11 +101,17 @@ namespace EduHub.Data.Entities
                     case "BUSADD02":
                         mapper[i] = (e, v) => e.BUSADD02 = v;
                         break;
+                    case "BUSADD03":
+                        mapper[i] = (e, v) => e.BUSADD03 = v;
+                        break;
                     case "BUSSTATE":
                         mapper[i] = (e, v) => e.BUSSTATE = v;
                         break;
                     case "POSTCODE":
                         mapper[i] = (e, v) => e.POSTCODE = v;
+                        break;
+                    case "BUSCOUNTRY":
+                        mapper[i] = (e, v) => e.BUSCOUNTRY = v;
                         break;
                     case "TELEPHONE":
                         mapper[i] = (e, v) => e.TELEPHONE = v;
@@ -126,11 +134,17 @@ namespace EduHub.Data.Entities
                     case "MAILADD02":
                         mapper[i] = (e, v) => e.MAILADD02 = v;
                         break;
+                    case "MAILADD03":
+                        mapper[i] = (e, v) => e.MAILADD03 = v;
+                        break;
                     case "MAILSTATE":
                         mapper[i] = (e, v) => e.MAILSTATE = v;
                         break;
                     case "MAILPOST":
                         mapper[i] = (e, v) => e.MAILPOST = v;
+                        break;
+                    case "MAILCOUNTRY":
+                        mapper[i] = (e, v) => e.MAILCOUNTRY = v;
                         break;
                     case "DELNAME":
                         mapper[i] = (e, v) => e.DELNAME = v;
@@ -257,12 +271,56 @@ namespace EduHub.Data.Entities
 
         #region Index Fields
 
+        private Lazy<NullDictionary<string, IReadOnlyList<DR>>> Index_BUSCOUNTRY;
         private Lazy<Dictionary<string, DR>> Index_DRKEY;
         private Lazy<NullDictionary<string, IReadOnlyList<DR>>> Index_DRTABLEA;
+        private Lazy<NullDictionary<string, IReadOnlyList<DR>>> Index_MAILCOUNTRY;
 
         #endregion
 
         #region Index Methods
+
+        /// <summary>
+        /// Find DR by BUSCOUNTRY field
+        /// </summary>
+        /// <param name="BUSCOUNTRY">BUSCOUNTRY value used to find DR</param>
+        /// <returns>List of related DR entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DR> FindByBUSCOUNTRY(string BUSCOUNTRY)
+        {
+            return Index_BUSCOUNTRY.Value[BUSCOUNTRY];
+        }
+
+        /// <summary>
+        /// Attempt to find DR by BUSCOUNTRY field
+        /// </summary>
+        /// <param name="BUSCOUNTRY">BUSCOUNTRY value used to find DR</param>
+        /// <param name="Value">List of related DR entities</param>
+        /// <returns>True if the list of related DR entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByBUSCOUNTRY(string BUSCOUNTRY, out IReadOnlyList<DR> Value)
+        {
+            return Index_BUSCOUNTRY.Value.TryGetValue(BUSCOUNTRY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find DR by BUSCOUNTRY field
+        /// </summary>
+        /// <param name="BUSCOUNTRY">BUSCOUNTRY value used to find DR</param>
+        /// <returns>List of related DR entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DR> TryFindByBUSCOUNTRY(string BUSCOUNTRY)
+        {
+            IReadOnlyList<DR> value;
+            if (Index_BUSCOUNTRY.Value.TryGetValue(BUSCOUNTRY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         /// <summary>
         /// Find DR by DRKEY field
@@ -348,6 +406,48 @@ namespace EduHub.Data.Entities
             }
         }
 
+        /// <summary>
+        /// Find DR by MAILCOUNTRY field
+        /// </summary>
+        /// <param name="MAILCOUNTRY">MAILCOUNTRY value used to find DR</param>
+        /// <returns>List of related DR entities</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DR> FindByMAILCOUNTRY(string MAILCOUNTRY)
+        {
+            return Index_MAILCOUNTRY.Value[MAILCOUNTRY];
+        }
+
+        /// <summary>
+        /// Attempt to find DR by MAILCOUNTRY field
+        /// </summary>
+        /// <param name="MAILCOUNTRY">MAILCOUNTRY value used to find DR</param>
+        /// <param name="Value">List of related DR entities</param>
+        /// <returns>True if the list of related DR entities is found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public bool TryFindByMAILCOUNTRY(string MAILCOUNTRY, out IReadOnlyList<DR> Value)
+        {
+            return Index_MAILCOUNTRY.Value.TryGetValue(MAILCOUNTRY, out Value);
+        }
+
+        /// <summary>
+        /// Attempt to find DR by MAILCOUNTRY field
+        /// </summary>
+        /// <param name="MAILCOUNTRY">MAILCOUNTRY value used to find DR</param>
+        /// <returns>List of related DR entities, or null if not found</returns>
+        /// <exception cref="ArgumentOutOfRangeException">No match was found</exception>
+        public IReadOnlyList<DR> TryFindByMAILCOUNTRY(string MAILCOUNTRY)
+        {
+            IReadOnlyList<DR> value;
+            if (Index_MAILCOUNTRY.Value.TryGetValue(MAILCOUNTRY, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         #endregion
 
         #region SQL Integration
@@ -384,8 +484,10 @@ BEGIN
         [BUSNAME] varchar(30) NULL,
         [BUSADD01] varchar(30) NULL,
         [BUSADD02] varchar(30) NULL,
+        [BUSADD03] varchar(30) NULL,
         [BUSSTATE] varchar(3) NULL,
         [POSTCODE] varchar(4) NULL,
+        [BUSCOUNTRY] varchar(6) NULL,
         [TELEPHONE] varchar(20) NULL,
         [FAX] varchar(20) NULL,
         [MOBILE] varchar(20) NULL,
@@ -393,8 +495,10 @@ BEGIN
         [MAILNAME] varchar(30) NULL,
         [MAILADD01] varchar(30) NULL,
         [MAILADD02] varchar(30) NULL,
+        [MAILADD03] varchar(30) NULL,
         [MAILSTATE] varchar(3) NULL,
         [MAILPOST] varchar(4) NULL,
+        [MAILCOUNTRY] varchar(6) NULL,
         [DELNAME] varchar(30) NULL,
         [ADDRESS01] varchar(30) NULL,
         [ADDRESS02] varchar(30) NULL,
@@ -419,9 +523,17 @@ BEGIN
             [DRKEY] ASC
         )
     );
+    CREATE NONCLUSTERED INDEX [DR_Index_BUSCOUNTRY] ON [dbo].[DR]
+    (
+            [BUSCOUNTRY] ASC
+    );
     CREATE NONCLUSTERED INDEX [DR_Index_DRTABLEA] ON [dbo].[DR]
     (
             [DRTABLEA] ASC
+    );
+    CREATE NONCLUSTERED INDEX [DR_Index_MAILCOUNTRY] ON [dbo].[DR]
+    (
+            [MAILCOUNTRY] ASC
     );
 END");
         }
@@ -438,8 +550,12 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DR]') AND name = N'DR_Index_DRTABLEA')
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DR]') AND name = N'DR_Index_BUSCOUNTRY')
+    ALTER INDEX [DR_Index_BUSCOUNTRY] ON [dbo].[DR] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DR]') AND name = N'DR_Index_DRTABLEA')
     ALTER INDEX [DR_Index_DRTABLEA] ON [dbo].[DR] DISABLE;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DR]') AND name = N'DR_Index_MAILCOUNTRY')
+    ALTER INDEX [DR_Index_MAILCOUNTRY] ON [dbo].[DR] DISABLE;
 ");
         }
 
@@ -453,8 +569,12 @@ END");
             return new SqlCommand(
                 connection: SqlConnection,
                 cmdText:
-@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DR]') AND name = N'DR_Index_DRTABLEA')
+@"IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DR]') AND name = N'DR_Index_BUSCOUNTRY')
+    ALTER INDEX [DR_Index_BUSCOUNTRY] ON [dbo].[DR] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DR]') AND name = N'DR_Index_DRTABLEA')
     ALTER INDEX [DR_Index_DRTABLEA] ON [dbo].[DR] REBUILD PARTITION = ALL;
+IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[DR]') AND name = N'DR_Index_MAILCOUNTRY')
+    ALTER INDEX [DR_Index_MAILCOUNTRY] ON [dbo].[DR] REBUILD PARTITION = ALL;
 ");
         }
 
@@ -525,7 +645,7 @@ END");
             {
             }
 
-            public override int FieldCount { get { return 51; } }
+            public override int FieldCount { get { return 55; } }
 
             public override object GetValue(int i)
             {
@@ -571,67 +691,75 @@ END");
                         return Current.BUSADD01;
                     case 19: // BUSADD02
                         return Current.BUSADD02;
-                    case 20: // BUSSTATE
+                    case 20: // BUSADD03
+                        return Current.BUSADD03;
+                    case 21: // BUSSTATE
                         return Current.BUSSTATE;
-                    case 21: // POSTCODE
+                    case 22: // POSTCODE
                         return Current.POSTCODE;
-                    case 22: // TELEPHONE
+                    case 23: // BUSCOUNTRY
+                        return Current.BUSCOUNTRY;
+                    case 24: // TELEPHONE
                         return Current.TELEPHONE;
-                    case 23: // FAX
+                    case 25: // FAX
                         return Current.FAX;
-                    case 24: // MOBILE
+                    case 26: // MOBILE
                         return Current.MOBILE;
-                    case 25: // BILLING_EMAIL
+                    case 27: // BILLING_EMAIL
                         return Current.BILLING_EMAIL;
-                    case 26: // MAILNAME
+                    case 28: // MAILNAME
                         return Current.MAILNAME;
-                    case 27: // MAILADD01
+                    case 29: // MAILADD01
                         return Current.MAILADD01;
-                    case 28: // MAILADD02
+                    case 30: // MAILADD02
                         return Current.MAILADD02;
-                    case 29: // MAILSTATE
+                    case 31: // MAILADD03
+                        return Current.MAILADD03;
+                    case 32: // MAILSTATE
                         return Current.MAILSTATE;
-                    case 30: // MAILPOST
+                    case 33: // MAILPOST
                         return Current.MAILPOST;
-                    case 31: // DELNAME
+                    case 34: // MAILCOUNTRY
+                        return Current.MAILCOUNTRY;
+                    case 35: // DELNAME
                         return Current.DELNAME;
-                    case 32: // ADDRESS01
+                    case 36: // ADDRESS01
                         return Current.ADDRESS01;
-                    case 33: // ADDRESS02
+                    case 37: // ADDRESS02
                         return Current.ADDRESS02;
-                    case 34: // DELIVPOST
+                    case 38: // DELIVPOST
                         return Current.DELIVPOST;
-                    case 35: // REMARK
+                    case 39: // REMARK
                         return Current.REMARK;
-                    case 36: // PRICELEVEL
+                    case 40: // PRICELEVEL
                         return Current.PRICELEVEL;
-                    case 37: // MEMO_FLAG
+                    case 41: // MEMO_FLAG
                         return Current.MEMO_FLAG;
-                    case 38: // NOTES
+                    case 42: // NOTES
                         return Current.NOTES;
-                    case 39: // DRSHORT
+                    case 43: // DRSHORT
                         return Current.DRSHORT;
-                    case 40: // CSR
+                    case 44: // CSR
                         return Current.CSR;
-                    case 41: // DRGROUP
+                    case 45: // DRGROUP
                         return Current.DRGROUP;
-                    case 42: // COMMENCE
+                    case 46: // COMMENCE
                         return Current.COMMENCE;
-                    case 43: // DRFCOUNT
+                    case 47: // DRFCOUNT
                         return Current.DRFCOUNT;
-                    case 44: // TAX_INVOICE
+                    case 48: // TAX_INVOICE
                         return Current.TAX_INVOICE;
-                    case 45: // BPAY_SEQUENCE
+                    case 49: // BPAY_SEQUENCE
                         return Current.BPAY_SEQUENCE;
-                    case 46: // BPAY_REFERENCE
+                    case 50: // BPAY_REFERENCE
                         return Current.BPAY_REFERENCE;
-                    case 47: // KNOTE_FLAG
+                    case 51: // KNOTE_FLAG
                         return Current.KNOTE_FLAG;
-                    case 48: // LW_DATE
+                    case 52: // LW_DATE
                         return Current.LW_DATE;
-                    case 49: // LW_TIME
+                    case 53: // LW_TIME
                         return Current.LW_TIME;
-                    case 50: // LW_USER
+                    case 54: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -680,67 +808,75 @@ END");
                         return Current.BUSADD01 == null;
                     case 19: // BUSADD02
                         return Current.BUSADD02 == null;
-                    case 20: // BUSSTATE
+                    case 20: // BUSADD03
+                        return Current.BUSADD03 == null;
+                    case 21: // BUSSTATE
                         return Current.BUSSTATE == null;
-                    case 21: // POSTCODE
+                    case 22: // POSTCODE
                         return Current.POSTCODE == null;
-                    case 22: // TELEPHONE
+                    case 23: // BUSCOUNTRY
+                        return Current.BUSCOUNTRY == null;
+                    case 24: // TELEPHONE
                         return Current.TELEPHONE == null;
-                    case 23: // FAX
+                    case 25: // FAX
                         return Current.FAX == null;
-                    case 24: // MOBILE
+                    case 26: // MOBILE
                         return Current.MOBILE == null;
-                    case 25: // BILLING_EMAIL
+                    case 27: // BILLING_EMAIL
                         return Current.BILLING_EMAIL == null;
-                    case 26: // MAILNAME
+                    case 28: // MAILNAME
                         return Current.MAILNAME == null;
-                    case 27: // MAILADD01
+                    case 29: // MAILADD01
                         return Current.MAILADD01 == null;
-                    case 28: // MAILADD02
+                    case 30: // MAILADD02
                         return Current.MAILADD02 == null;
-                    case 29: // MAILSTATE
+                    case 31: // MAILADD03
+                        return Current.MAILADD03 == null;
+                    case 32: // MAILSTATE
                         return Current.MAILSTATE == null;
-                    case 30: // MAILPOST
+                    case 33: // MAILPOST
                         return Current.MAILPOST == null;
-                    case 31: // DELNAME
+                    case 34: // MAILCOUNTRY
+                        return Current.MAILCOUNTRY == null;
+                    case 35: // DELNAME
                         return Current.DELNAME == null;
-                    case 32: // ADDRESS01
+                    case 36: // ADDRESS01
                         return Current.ADDRESS01 == null;
-                    case 33: // ADDRESS02
+                    case 37: // ADDRESS02
                         return Current.ADDRESS02 == null;
-                    case 34: // DELIVPOST
+                    case 38: // DELIVPOST
                         return Current.DELIVPOST == null;
-                    case 35: // REMARK
+                    case 39: // REMARK
                         return Current.REMARK == null;
-                    case 36: // PRICELEVEL
+                    case 40: // PRICELEVEL
                         return Current.PRICELEVEL == null;
-                    case 37: // MEMO_FLAG
+                    case 41: // MEMO_FLAG
                         return Current.MEMO_FLAG == null;
-                    case 38: // NOTES
+                    case 42: // NOTES
                         return Current.NOTES == null;
-                    case 39: // DRSHORT
+                    case 43: // DRSHORT
                         return Current.DRSHORT == null;
-                    case 40: // CSR
+                    case 44: // CSR
                         return Current.CSR == null;
-                    case 41: // DRGROUP
+                    case 45: // DRGROUP
                         return Current.DRGROUP == null;
-                    case 42: // COMMENCE
+                    case 46: // COMMENCE
                         return Current.COMMENCE == null;
-                    case 43: // DRFCOUNT
+                    case 47: // DRFCOUNT
                         return Current.DRFCOUNT == null;
-                    case 44: // TAX_INVOICE
+                    case 48: // TAX_INVOICE
                         return Current.TAX_INVOICE == null;
-                    case 45: // BPAY_SEQUENCE
+                    case 49: // BPAY_SEQUENCE
                         return Current.BPAY_SEQUENCE == null;
-                    case 46: // BPAY_REFERENCE
+                    case 50: // BPAY_REFERENCE
                         return Current.BPAY_REFERENCE == null;
-                    case 47: // KNOTE_FLAG
+                    case 51: // KNOTE_FLAG
                         return Current.KNOTE_FLAG == null;
-                    case 48: // LW_DATE
+                    case 52: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 49: // LW_TIME
+                    case 53: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 50: // LW_USER
+                    case 54: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -791,67 +927,75 @@ END");
                         return "BUSADD01";
                     case 19: // BUSADD02
                         return "BUSADD02";
-                    case 20: // BUSSTATE
+                    case 20: // BUSADD03
+                        return "BUSADD03";
+                    case 21: // BUSSTATE
                         return "BUSSTATE";
-                    case 21: // POSTCODE
+                    case 22: // POSTCODE
                         return "POSTCODE";
-                    case 22: // TELEPHONE
+                    case 23: // BUSCOUNTRY
+                        return "BUSCOUNTRY";
+                    case 24: // TELEPHONE
                         return "TELEPHONE";
-                    case 23: // FAX
+                    case 25: // FAX
                         return "FAX";
-                    case 24: // MOBILE
+                    case 26: // MOBILE
                         return "MOBILE";
-                    case 25: // BILLING_EMAIL
+                    case 27: // BILLING_EMAIL
                         return "BILLING_EMAIL";
-                    case 26: // MAILNAME
+                    case 28: // MAILNAME
                         return "MAILNAME";
-                    case 27: // MAILADD01
+                    case 29: // MAILADD01
                         return "MAILADD01";
-                    case 28: // MAILADD02
+                    case 30: // MAILADD02
                         return "MAILADD02";
-                    case 29: // MAILSTATE
+                    case 31: // MAILADD03
+                        return "MAILADD03";
+                    case 32: // MAILSTATE
                         return "MAILSTATE";
-                    case 30: // MAILPOST
+                    case 33: // MAILPOST
                         return "MAILPOST";
-                    case 31: // DELNAME
+                    case 34: // MAILCOUNTRY
+                        return "MAILCOUNTRY";
+                    case 35: // DELNAME
                         return "DELNAME";
-                    case 32: // ADDRESS01
+                    case 36: // ADDRESS01
                         return "ADDRESS01";
-                    case 33: // ADDRESS02
+                    case 37: // ADDRESS02
                         return "ADDRESS02";
-                    case 34: // DELIVPOST
+                    case 38: // DELIVPOST
                         return "DELIVPOST";
-                    case 35: // REMARK
+                    case 39: // REMARK
                         return "REMARK";
-                    case 36: // PRICELEVEL
+                    case 40: // PRICELEVEL
                         return "PRICELEVEL";
-                    case 37: // MEMO_FLAG
+                    case 41: // MEMO_FLAG
                         return "MEMO_FLAG";
-                    case 38: // NOTES
+                    case 42: // NOTES
                         return "NOTES";
-                    case 39: // DRSHORT
+                    case 43: // DRSHORT
                         return "DRSHORT";
-                    case 40: // CSR
+                    case 44: // CSR
                         return "CSR";
-                    case 41: // DRGROUP
+                    case 45: // DRGROUP
                         return "DRGROUP";
-                    case 42: // COMMENCE
+                    case 46: // COMMENCE
                         return "COMMENCE";
-                    case 43: // DRFCOUNT
+                    case 47: // DRFCOUNT
                         return "DRFCOUNT";
-                    case 44: // TAX_INVOICE
+                    case 48: // TAX_INVOICE
                         return "TAX_INVOICE";
-                    case 45: // BPAY_SEQUENCE
+                    case 49: // BPAY_SEQUENCE
                         return "BPAY_SEQUENCE";
-                    case 46: // BPAY_REFERENCE
+                    case 50: // BPAY_REFERENCE
                         return "BPAY_REFERENCE";
-                    case 47: // KNOTE_FLAG
+                    case 51: // KNOTE_FLAG
                         return "KNOTE_FLAG";
-                    case 48: // LW_DATE
+                    case 52: // LW_DATE
                         return "LW_DATE";
-                    case 49: // LW_TIME
+                    case 53: // LW_TIME
                         return "LW_TIME";
-                    case 50: // LW_USER
+                    case 54: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -902,68 +1046,76 @@ END");
                         return 18;
                     case "BUSADD02":
                         return 19;
-                    case "BUSSTATE":
+                    case "BUSADD03":
                         return 20;
-                    case "POSTCODE":
+                    case "BUSSTATE":
                         return 21;
-                    case "TELEPHONE":
+                    case "POSTCODE":
                         return 22;
-                    case "FAX":
+                    case "BUSCOUNTRY":
                         return 23;
-                    case "MOBILE":
+                    case "TELEPHONE":
                         return 24;
-                    case "BILLING_EMAIL":
+                    case "FAX":
                         return 25;
-                    case "MAILNAME":
+                    case "MOBILE":
                         return 26;
-                    case "MAILADD01":
+                    case "BILLING_EMAIL":
                         return 27;
-                    case "MAILADD02":
+                    case "MAILNAME":
                         return 28;
-                    case "MAILSTATE":
+                    case "MAILADD01":
                         return 29;
-                    case "MAILPOST":
+                    case "MAILADD02":
                         return 30;
-                    case "DELNAME":
+                    case "MAILADD03":
                         return 31;
-                    case "ADDRESS01":
+                    case "MAILSTATE":
                         return 32;
-                    case "ADDRESS02":
+                    case "MAILPOST":
                         return 33;
-                    case "DELIVPOST":
+                    case "MAILCOUNTRY":
                         return 34;
-                    case "REMARK":
+                    case "DELNAME":
                         return 35;
-                    case "PRICELEVEL":
+                    case "ADDRESS01":
                         return 36;
-                    case "MEMO_FLAG":
+                    case "ADDRESS02":
                         return 37;
-                    case "NOTES":
+                    case "DELIVPOST":
                         return 38;
-                    case "DRSHORT":
+                    case "REMARK":
                         return 39;
-                    case "CSR":
+                    case "PRICELEVEL":
                         return 40;
-                    case "DRGROUP":
+                    case "MEMO_FLAG":
                         return 41;
-                    case "COMMENCE":
+                    case "NOTES":
                         return 42;
-                    case "DRFCOUNT":
+                    case "DRSHORT":
                         return 43;
-                    case "TAX_INVOICE":
+                    case "CSR":
                         return 44;
-                    case "BPAY_SEQUENCE":
+                    case "DRGROUP":
                         return 45;
-                    case "BPAY_REFERENCE":
+                    case "COMMENCE":
                         return 46;
-                    case "KNOTE_FLAG":
+                    case "DRFCOUNT":
                         return 47;
-                    case "LW_DATE":
+                    case "TAX_INVOICE":
                         return 48;
-                    case "LW_TIME":
+                    case "BPAY_SEQUENCE":
                         return 49;
-                    case "LW_USER":
+                    case "BPAY_REFERENCE":
                         return 50;
+                    case "KNOTE_FLAG":
+                        return 51;
+                    case "LW_DATE":
+                        return 52;
+                    case "LW_TIME":
+                        return 53;
+                    case "LW_USER":
+                        return 54;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

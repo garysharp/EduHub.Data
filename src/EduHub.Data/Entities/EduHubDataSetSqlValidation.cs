@@ -7,13 +7,13 @@ namespace EduHub.Data.Entities
         /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
-            // Check for the existence of the FAIR_MARKET column. New to C21v58.
+            // Check for the existence of the AKR_DESC column. New to C21v67.
             const string sql = @"SELECT
 	1 - COUNT(*)
 FROM sys.columns
 WHERE
 	object_id = OBJECT_ID(N'[dbo].[AR]') AND
-	name = 'FAIR_MARKET'";
+	name = 'AKR_DESC'";
 
             return new SqlCommand(sql, SqlConnection);
         }
@@ -24,13 +24,13 @@ WHERE
         /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
-            // Check for the existence of the ARN column. New to C21v64.
+            // Check for the existence of the COUNTRY column. New to C21v67.
             const string sql = @"SELECT
 	1 - COUNT(*)
 FROM sys.columns
 WHERE
 	object_id = OBJECT_ID(N'[dbo].[CR]') AND
-	name = 'ARN'";
+	name = 'COUNTRY'";
 
             return new SqlCommand(sql, SqlConnection);
         }
@@ -58,15 +58,14 @@ WHERE
         /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
-            // Check that the EMERG_CONTACT columns have the right type. Modified in C21v60.
+            // Check for the existence of the HEALTH_SUM_SI_ID column. Modified in C21v67.
             const string sql = @"SELECT
-	4 - COUNT(*)
+	1 - COUNT(*)
 FROM sys.columns c
 JOIN sys.types t ON c.system_type_id=t.system_type_id
 WHERE
 	object_id = OBJECT_ID(N'[dbo].[DF_TFR]') AND
-	c.name LIKE 'EMERG_CONTACT0%' AND
-	t.name = 'varchar'";
+	c.name = 'HEALTH_SUM_SI_ID'";
 
             return new SqlCommand(sql, SqlConnection);
         }
@@ -77,13 +76,13 @@ WHERE
         /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
-            // Check for the existence of the WWCC_NUMBER_A column. New to C21v64.
+            // Check for the existence of the HEALTH_SUM_SI_ID column. New to C21v67.
             const string sql = @"SELECT
 	1 - COUNT(*)
 FROM sys.columns
 WHERE
 	object_id = OBJECT_ID(N'[dbo].[DF]') AND
-	name = 'WWCC_NUMBER_A'";
+	name = 'HEALTH_SUM_SI_ID'";
 
             return new SqlCommand(sql, SqlConnection);
         }
@@ -94,13 +93,13 @@ WHERE
         /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
-            // Check for the existence of the KNOTE_FLAG column. New to C21v64.
+            // Check for the existence of the MAILCOUNTRY column. New to C21v67.
             const string sql = @"SELECT
 	1 - COUNT(*)
 FROM sys.columns
 WHERE
 	object_id = OBJECT_ID(N'[dbo].[DR]') AND
-	name = 'KNOTE_FLAG'";
+	name = 'MAILCOUNTRY'";
 
             return new SqlCommand(sql, SqlConnection);
         }
@@ -403,13 +402,26 @@ WHERE
         /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
-            // Check for the existence of the EMERG_CONTACT_MEMO01 column. New to C21v64.
+            // Check that column lengths are correct. Changed in C21v67.
             const string sql = @"SELECT
-	1 - COUNT(*)
+	9 - COUNT(*)
 FROM sys.columns
 WHERE
 	object_id = OBJECT_ID(N'[dbo].[SF]') AND
-	name = 'EMERG_CONTACT_MEMO01'";
+	(
+		(name = 'FIRST_NAME' AND max_length >= 30)
+		OR
+		(name = 'PREF_NAME' AND max_length >= 30)
+		OR
+		(name = 'E_MAIL' AND max_length >= 70)
+		OR
+		(name LIKE 'EMERG_NAME0%' AND max_length >= 50)
+		OR
+		(name LIKE 'EMERG_RELATION0%' AND max_length >= 30)
+		OR
+		(name LIKE 'EMERG_CONTACT0%' AND max_length >= 30)
+	)
+";
 
             return new SqlCommand(sql, SqlConnection);
         }
@@ -420,13 +432,13 @@ WHERE
         /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
-            // Check for the existence of the VET column. New to C21v58.
+            // Check for the existence of the FINANCIAL_SUPPORT column. New to C21v67.
             const string sql = @"SELECT
 	1 - COUNT(*)
 FROM sys.columns
 WHERE
 	object_id = OBJECT_ID(N'[dbo].[SG]') AND
-	name = 'VET'";
+	name = 'FINANCIAL_SUPPORT'";
 
             return new SqlCommand(sql, SqlConnection);
         }
@@ -471,13 +483,13 @@ WHERE
         /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
-            // Check for the existence of the EXP_ASREQ_MED column. New to C21v64.
+            // Check for the existence of the ALERT column. New to C21v67.
             const string sql = @"SELECT
 	1 - COUNT(*)
 FROM sys.columns
 WHERE
 	object_id = OBJECT_ID(N'[dbo].[SMC]') AND
-	name = 'EXP_ASREQ_MED'";
+	name = 'ALERT'";
 
             return new SqlCommand(sql, SqlConnection);
         }
@@ -507,13 +519,13 @@ WHERE
         /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
-            // Check for the existence of the MYLNS_NUMERACY column. New to C21v64.
+            // Check for the existence of the FLO column. New to C21v67.
             const string sql = @"SELECT
 	1 - COUNT(*)
 FROM sys.columns
 WHERE
 	object_id = OBJECT_ID(N'[dbo].[ST]') AND
-	name = 'MYLNS_NUMERACY'";
+	name = 'FLO'";
 
             return new SqlCommand(sql, SqlConnection);
         }
@@ -847,13 +859,13 @@ WHERE
         /// <inheritdoc />
         public override SqlCommand GetSqlTableIsValidCommand(SqlConnection SqlConnection)
         {
-            // Check for the existence of the LATITUDE and LONGITUDE columns. New to C21v59.
+            // Check for the existence of the UM_TRANS_ID column. New to C21v67.
             const string sql = @"SELECT
-	2 - COUNT(*)
+	1 - COUNT(*)
 FROM sys.columns
 WHERE
 	object_id = OBJECT_ID(N'[dbo].[UM]') AND
-	name IN ('LATITUDE', 'LONGITUDE')";
+	name IN ('UM_TRANS_ID')";
 
             return new SqlCommand(sql, SqlConnection);
         }

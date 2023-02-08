@@ -177,20 +177,20 @@ namespace EduHub.Data.Entities
         public string EMAIL_ADDRESS { get; internal set; }
 
         /// <summary>
-        /// Emergency Contact Name
-        /// [Uppercase Alphanumeric (50)]
+        /// Emergency Contact
+        /// [Titlecase (50)]
         /// </summary>
         public string EMERG_CONTACT { get; internal set; }
 
         /// <summary>
         /// Emergency Contact Relationship
-        /// [Uppercase Alphanumeric (30)]
+        /// [Titlecase (30)]
         /// </summary>
         public string EMERG_RELATE { get; internal set; }
 
         /// <summary>
-        /// Emergecny Contact Phone
-        /// [Uppercase Alphanumeric (24)]
+        /// Emergency Contact Phone
+        /// [Alphanumeric (24)]
         /// </summary>
         public string EMERG_PHONE { get; internal set; }
 
@@ -203,6 +203,24 @@ namespace EduHub.Data.Entities
         /// Finish Date
         /// </summary>
         public DateTime? FINISH_DATE { get; internal set; }
+
+        /// <summary>
+        /// Emergency Contact
+        /// [Titlecase (50)]
+        /// </summary>
+        public string EMERG_CONTACT_TWO { get; internal set; }
+
+        /// <summary>
+        /// Emergency Contact Relationship
+        /// [Titlecase (30)]
+        /// </summary>
+        public string EMERG_RELATE_TWO { get; internal set; }
+
+        /// <summary>
+        /// Emergency Contact Phone
+        /// [Alphanumeric (24)]
+        /// </summary>
+        public string EMERG_PHONE_TWO { get; internal set; }
 
         #endregion
 

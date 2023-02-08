@@ -14,6 +14,8 @@ namespace EduHub.Data.Entities
         #region Navigation Property Cache
 
         private SA Cache_DRTABLEA_SA;
+        private KGT Cache_BUSCOUNTRY_KGT;
+        private KGT Cache_MAILCOUNTRY_KGT;
 
         #endregion
 
@@ -153,6 +155,12 @@ namespace EduHub.Data.Entities
         public string BUSADD02 { get; internal set; }
 
         /// <summary>
+        /// Business address of Debtor
+        /// [Alphanumeric (30)]
+        /// </summary>
+        public string BUSADD03 { get; internal set; }
+
+        /// <summary>
         /// Business state
         /// [Uppercase Alphanumeric (3)]
         /// </summary>
@@ -163,6 +171,12 @@ namespace EduHub.Data.Entities
         /// [Alphanumeric (4)]
         /// </summary>
         public string POSTCODE { get; internal set; }
+
+        /// <summary>
+        /// Country (default '1101' code for Australia)
+        /// [Uppercase Alphanumeric (6)]
+        /// </summary>
+        public string BUSCOUNTRY { get; internal set; }
 
         /// <summary>
         /// Telephone number
@@ -207,6 +221,12 @@ namespace EduHub.Data.Entities
         public string MAILADD02 { get; internal set; }
 
         /// <summary>
+        /// Mailing address
+        /// [Alphanumeric (30)]
+        /// </summary>
+        public string MAILADD03 { get; internal set; }
+
+        /// <summary>
         /// Mailing state
         /// [Uppercase Alphanumeric (3)]
         /// </summary>
@@ -217,6 +237,12 @@ namespace EduHub.Data.Entities
         /// [Alphanumeric (4)]
         /// </summary>
         public string MAILPOST { get; internal set; }
+
+        /// <summary>
+        /// Country (default '1101' code for Australia)
+        /// [Uppercase Alphanumeric (6)]
+        /// </summary>
+        public string MAILCOUNTRY { get; internal set; }
 
         /// <summary>
         /// Delivery name
@@ -354,6 +380,48 @@ namespace EduHub.Data.Entities
                 }
 
                 return Cache_DRTABLEA_SA;
+            }
+        }
+
+        /// <summary>
+        /// KGT (Countries) related entity by [DR.BUSCOUNTRY]-&gt;[KGT.COUNTRY]
+        /// Country (default '1101' code for Australia)
+        /// </summary>
+        public KGT BUSCOUNTRY_KGT
+        {
+            get
+            {
+                if (BUSCOUNTRY == null)
+                {
+                    return null;
+                }
+                if (Cache_BUSCOUNTRY_KGT == null)
+                {
+                    Cache_BUSCOUNTRY_KGT = Context.KGT.FindByCOUNTRY(BUSCOUNTRY);
+                }
+
+                return Cache_BUSCOUNTRY_KGT;
+            }
+        }
+
+        /// <summary>
+        /// KGT (Countries) related entity by [DR.MAILCOUNTRY]-&gt;[KGT.COUNTRY]
+        /// Country (default '1101' code for Australia)
+        /// </summary>
+        public KGT MAILCOUNTRY_KGT
+        {
+            get
+            {
+                if (MAILCOUNTRY == null)
+                {
+                    return null;
+                }
+                if (Cache_MAILCOUNTRY_KGT == null)
+                {
+                    Cache_MAILCOUNTRY_KGT = Context.KGT.FindByCOUNTRY(MAILCOUNTRY);
+                }
+
+                return Cache_MAILCOUNTRY_KGT;
             }
         }
 

@@ -159,6 +159,12 @@ namespace EduHub.Data.Entities
                     case "EXP_ASREQ_MED":
                         mapper[i] = (e, v) => e.EXP_ASREQ_MED = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
+                    case "HEALTH_INFO_SI_ID":
+                        mapper[i] = (e, v) => e.HEALTH_INFO_SI_ID = v;
+                        break;
+                    case "ALERT":
+                        mapper[i] = (e, v) => e.ALERT = v;
+                        break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
@@ -479,7 +485,7 @@ BEGIN
         [REGULAR_DOSAGE] varchar(30) NULL,
         [REGULAR_FREQUENCY] varchar(15) NULL,
         [REGULAR_DOSAGE_TIME] varchar(15) NULL,
-        [REGULAR_MEDICATION_LOCAT] varchar(30) NULL,
+        [REGULAR_MEDICATION_LOCAT] varchar(100) NULL,
         [REGULAR_ADMIN_BY] varchar(7) NULL,
         [REMINDER] varchar(1) NULL,
         [INFORM_DOCTOR] varchar(1) NULL,
@@ -491,7 +497,7 @@ BEGIN
         [AD_HOC_POISON_RATING] varchar(2) NULL,
         [AD_HOC_DOSAGE] varchar(30) NULL,
         [AD_HOC_FREQUENCY] varchar(15) NULL,
-        [AD_HOC_MEDICATION_LOCAT] varchar(30) NULL,
+        [AD_HOC_MEDICATION_LOCAT] varchar(100) NULL,
         [AD_HOC_ADMIN_BY] varchar(7) NULL,
         [HOME_MEDICATION] varchar(60) NULL,
         [ASTHMA_WHEEZE] varchar(1) NULL,
@@ -508,6 +514,8 @@ BEGIN
         [DISABILITY_ADJUSTMENT] varchar(MAX) NULL,
         [EXP_REG_MED] datetime NULL,
         [EXP_ASREQ_MED] datetime NULL,
+        [HEALTH_INFO_SI_ID] varchar(20) NULL,
+        [ALERT] varchar(1) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,
@@ -645,7 +653,7 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMC]') AND
             {
             }
 
-            public override int FieldCount { get { return 42; } }
+            public override int FieldCount { get { return 44; } }
 
             public override object GetValue(int i)
             {
@@ -729,11 +737,15 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMC]') AND
                         return Current.EXP_REG_MED;
                     case 38: // EXP_ASREQ_MED
                         return Current.EXP_ASREQ_MED;
-                    case 39: // LW_DATE
+                    case 39: // HEALTH_INFO_SI_ID
+                        return Current.HEALTH_INFO_SI_ID;
+                    case 40: // ALERT
+                        return Current.ALERT;
+                    case 41: // LW_DATE
                         return Current.LW_DATE;
-                    case 40: // LW_TIME
+                    case 42: // LW_TIME
                         return Current.LW_TIME;
-                    case 41: // LW_USER
+                    case 43: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -820,11 +832,15 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMC]') AND
                         return Current.EXP_REG_MED == null;
                     case 38: // EXP_ASREQ_MED
                         return Current.EXP_ASREQ_MED == null;
-                    case 39: // LW_DATE
+                    case 39: // HEALTH_INFO_SI_ID
+                        return Current.HEALTH_INFO_SI_ID == null;
+                    case 40: // ALERT
+                        return Current.ALERT == null;
+                    case 41: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 40: // LW_TIME
+                    case 42: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 41: // LW_USER
+                    case 43: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -913,11 +929,15 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMC]') AND
                         return "EXP_REG_MED";
                     case 38: // EXP_ASREQ_MED
                         return "EXP_ASREQ_MED";
-                    case 39: // LW_DATE
+                    case 39: // HEALTH_INFO_SI_ID
+                        return "HEALTH_INFO_SI_ID";
+                    case 40: // ALERT
+                        return "ALERT";
+                    case 41: // LW_DATE
                         return "LW_DATE";
-                    case 40: // LW_TIME
+                    case 42: // LW_TIME
                         return "LW_TIME";
-                    case 41: // LW_USER
+                    case 43: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -1006,12 +1026,16 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SMC]') AND
                         return 37;
                     case "EXP_ASREQ_MED":
                         return 38;
-                    case "LW_DATE":
+                    case "HEALTH_INFO_SI_ID":
                         return 39;
-                    case "LW_TIME":
+                    case "ALERT":
                         return 40;
-                    case "LW_USER":
+                    case "LW_DATE":
                         return 41;
+                    case "LW_TIME":
+                        return 42;
+                    case "LW_USER":
+                        return 43;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

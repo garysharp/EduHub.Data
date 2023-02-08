@@ -157,6 +157,12 @@ namespace EduHub.Data.Entities
         public string COMMENTS { get; internal set; }
 
         /// <summary>
+        /// Last Reoncile Comment - contains difference explanation.
+        /// [Memo]
+        /// </summary>
+        public string LAST_RECONCILE_COMMENT { get; internal set; }
+
+        /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }

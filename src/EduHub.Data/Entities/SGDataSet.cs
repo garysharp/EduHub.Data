@@ -217,6 +217,15 @@ namespace EduHub.Data.Entities
                     case "VET":
                         mapper[i] = (e, v) => e.VET = v;
                         break;
+                    case "VOLUNTARY":
+                        mapper[i] = (e, v) => e.VOLUNTARY = v;
+                        break;
+                    case "REFUND":
+                        mapper[i] = (e, v) => e.REFUND = v;
+                        break;
+                    case "FINANCIAL_SUPPORT":
+                        mapper[i] = (e, v) => e.FINANCIAL_SUPPORT = v;
+                        break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
@@ -756,6 +765,9 @@ BEGIN
         [ADULT_RESPONSIBLE] varchar(10) NULL,
         [RESP_PARENT_GENDER] varchar(1) NULL,
         [VET] varchar(1) NULL,
+        [VOLUNTARY] varchar(1) NULL,
+        [REFUND] varchar(MAX) NULL,
+        [FINANCIAL_SUPPORT] varchar(MAX) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,
@@ -925,7 +937,7 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SG]') AND 
             {
             }
 
-            public override int FieldCount { get { return 60; } }
+            public override int FieldCount { get { return 63; } }
 
             public override object GetValue(int i)
             {
@@ -1045,11 +1057,17 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SG]') AND 
                         return Current.RESP_PARENT_GENDER;
                     case 56: // VET
                         return Current.VET;
-                    case 57: // LW_DATE
+                    case 57: // VOLUNTARY
+                        return Current.VOLUNTARY;
+                    case 58: // REFUND
+                        return Current.REFUND;
+                    case 59: // FINANCIAL_SUPPORT
+                        return Current.FINANCIAL_SUPPORT;
+                    case 60: // LW_DATE
                         return Current.LW_DATE;
-                    case 58: // LW_TIME
+                    case 61: // LW_TIME
                         return Current.LW_TIME;
-                    case 59: // LW_USER
+                    case 62: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -1172,11 +1190,17 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SG]') AND 
                         return Current.RESP_PARENT_GENDER == null;
                     case 56: // VET
                         return Current.VET == null;
-                    case 57: // LW_DATE
+                    case 57: // VOLUNTARY
+                        return Current.VOLUNTARY == null;
+                    case 58: // REFUND
+                        return Current.REFUND == null;
+                    case 59: // FINANCIAL_SUPPORT
+                        return Current.FINANCIAL_SUPPORT == null;
+                    case 60: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 58: // LW_TIME
+                    case 61: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 59: // LW_USER
+                    case 62: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -1301,11 +1325,17 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SG]') AND 
                         return "RESP_PARENT_GENDER";
                     case 56: // VET
                         return "VET";
-                    case 57: // LW_DATE
+                    case 57: // VOLUNTARY
+                        return "VOLUNTARY";
+                    case 58: // REFUND
+                        return "REFUND";
+                    case 59: // FINANCIAL_SUPPORT
+                        return "FINANCIAL_SUPPORT";
+                    case 60: // LW_DATE
                         return "LW_DATE";
-                    case 58: // LW_TIME
+                    case 61: // LW_TIME
                         return "LW_TIME";
-                    case 59: // LW_USER
+                    case 62: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -1430,12 +1460,18 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[SG]') AND 
                         return 55;
                     case "VET":
                         return 56;
-                    case "LW_DATE":
+                    case "VOLUNTARY":
                         return 57;
-                    case "LW_TIME":
+                    case "REFUND":
                         return 58;
-                    case "LW_USER":
+                    case "FINANCIAL_SUPPORT":
                         return 59;
+                    case "LW_DATE":
+                        return 60;
+                    case "LW_TIME":
+                        return 61;
+                    case "LW_USER":
+                        return 62;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

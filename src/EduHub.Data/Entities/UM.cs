@@ -138,6 +138,12 @@ namespace EduHub.Data.Entities
         public double? LONGITUDE { get; internal set; }
 
         /// <summary>
+        /// Unique UM Transfer ID used for SDT Process only (if applicable)
+        /// [Uppercase Alphanumeric (30)]
+        /// </summary>
+        public string UM_TRANS_ID { get; internal set; }
+
+        /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }

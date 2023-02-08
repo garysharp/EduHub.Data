@@ -663,11 +663,32 @@ namespace EduHub.Data.Entities
                     case "DET_TUTOR":
                         mapper[i] = (e, v) => e.DET_TUTOR = v;
                         break;
+                    case "DET_TUTORNUM":
+                        mapper[i] = (e, v) => e.DET_TUTORNUM = v;
+                        break;
                     case "MYLNS_LITERACY":
                         mapper[i] = (e, v) => e.MYLNS_LITERACY = v;
                         break;
                     case "MYLNS_NUMERACY":
                         mapper[i] = (e, v) => e.MYLNS_NUMERACY = v;
+                        break;
+                    case "KLNP_LITERACY":
+                        mapper[i] = (e, v) => e.KLNP_LITERACY = v;
+                        break;
+                    case "KLNP_NUMERACY":
+                        mapper[i] = (e, v) => e.KLNP_NUMERACY = v;
+                        break;
+                    case "STUDENT_SI_ID":
+                        mapper[i] = (e, v) => e.STUDENT_SI_ID = v;
+                        break;
+                    case "ENROLMENT_SI_ID":
+                        mapper[i] = (e, v) => e.ENROLMENT_SI_ID = v;
+                        break;
+                    case "APPLICATION_SI_ID":
+                        mapper[i] = (e, v) => e.APPLICATION_SI_ID = v;
+                        break;
+                    case "FLO":
+                        mapper[i] = (e, v) => e.FLO = v;
                         break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
@@ -2213,8 +2234,15 @@ BEGIN
         [YOUNG_CARER] varchar(40) NULL,
         [GENDER_DESC] varchar(100) NULL,
         [DET_TUTOR] varchar(1) NULL,
+        [DET_TUTORNUM] varchar(1) NULL,
         [MYLNS_LITERACY] varchar(1) NULL,
         [MYLNS_NUMERACY] varchar(1) NULL,
+        [KLNP_LITERACY] varchar(1) NULL,
+        [KLNP_NUMERACY] varchar(1) NULL,
+        [STUDENT_SI_ID] varchar(20) NULL,
+        [ENROLMENT_SI_ID] varchar(20) NULL,
+        [APPLICATION_SI_ID] varchar(20) NULL,
+        [FLO] varchar(1) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,
@@ -2560,7 +2588,7 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND 
             {
             }
 
-            public override int FieldCount { get { return 204; } }
+            public override int FieldCount { get { return 211; } }
 
             public override object GetValue(int i)
             {
@@ -2964,15 +2992,29 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND 
                         return Current.GENDER_DESC;
                     case 198: // DET_TUTOR
                         return Current.DET_TUTOR;
-                    case 199: // MYLNS_LITERACY
+                    case 199: // DET_TUTORNUM
+                        return Current.DET_TUTORNUM;
+                    case 200: // MYLNS_LITERACY
                         return Current.MYLNS_LITERACY;
-                    case 200: // MYLNS_NUMERACY
+                    case 201: // MYLNS_NUMERACY
                         return Current.MYLNS_NUMERACY;
-                    case 201: // LW_DATE
+                    case 202: // KLNP_LITERACY
+                        return Current.KLNP_LITERACY;
+                    case 203: // KLNP_NUMERACY
+                        return Current.KLNP_NUMERACY;
+                    case 204: // STUDENT_SI_ID
+                        return Current.STUDENT_SI_ID;
+                    case 205: // ENROLMENT_SI_ID
+                        return Current.ENROLMENT_SI_ID;
+                    case 206: // APPLICATION_SI_ID
+                        return Current.APPLICATION_SI_ID;
+                    case 207: // FLO
+                        return Current.FLO;
+                    case 208: // LW_DATE
                         return Current.LW_DATE;
-                    case 202: // LW_TIME
+                    case 209: // LW_TIME
                         return Current.LW_TIME;
-                    case 203: // LW_USER
+                    case 210: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -3377,15 +3419,29 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND 
                         return Current.GENDER_DESC == null;
                     case 198: // DET_TUTOR
                         return Current.DET_TUTOR == null;
-                    case 199: // MYLNS_LITERACY
+                    case 199: // DET_TUTORNUM
+                        return Current.DET_TUTORNUM == null;
+                    case 200: // MYLNS_LITERACY
                         return Current.MYLNS_LITERACY == null;
-                    case 200: // MYLNS_NUMERACY
+                    case 201: // MYLNS_NUMERACY
                         return Current.MYLNS_NUMERACY == null;
-                    case 201: // LW_DATE
+                    case 202: // KLNP_LITERACY
+                        return Current.KLNP_LITERACY == null;
+                    case 203: // KLNP_NUMERACY
+                        return Current.KLNP_NUMERACY == null;
+                    case 204: // STUDENT_SI_ID
+                        return Current.STUDENT_SI_ID == null;
+                    case 205: // ENROLMENT_SI_ID
+                        return Current.ENROLMENT_SI_ID == null;
+                    case 206: // APPLICATION_SI_ID
+                        return Current.APPLICATION_SI_ID == null;
+                    case 207: // FLO
+                        return Current.FLO == null;
+                    case 208: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 202: // LW_TIME
+                    case 209: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 203: // LW_USER
+                    case 210: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -3794,15 +3850,29 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND 
                         return "GENDER_DESC";
                     case 198: // DET_TUTOR
                         return "DET_TUTOR";
-                    case 199: // MYLNS_LITERACY
+                    case 199: // DET_TUTORNUM
+                        return "DET_TUTORNUM";
+                    case 200: // MYLNS_LITERACY
                         return "MYLNS_LITERACY";
-                    case 200: // MYLNS_NUMERACY
+                    case 201: // MYLNS_NUMERACY
                         return "MYLNS_NUMERACY";
-                    case 201: // LW_DATE
+                    case 202: // KLNP_LITERACY
+                        return "KLNP_LITERACY";
+                    case 203: // KLNP_NUMERACY
+                        return "KLNP_NUMERACY";
+                    case 204: // STUDENT_SI_ID
+                        return "STUDENT_SI_ID";
+                    case 205: // ENROLMENT_SI_ID
+                        return "ENROLMENT_SI_ID";
+                    case 206: // APPLICATION_SI_ID
+                        return "APPLICATION_SI_ID";
+                    case 207: // FLO
+                        return "FLO";
+                    case 208: // LW_DATE
                         return "LW_DATE";
-                    case 202: // LW_TIME
+                    case 209: // LW_TIME
                         return "LW_TIME";
-                    case 203: // LW_USER
+                    case 210: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -4211,16 +4281,30 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[ST]') AND 
                         return 197;
                     case "DET_TUTOR":
                         return 198;
-                    case "MYLNS_LITERACY":
+                    case "DET_TUTORNUM":
                         return 199;
-                    case "MYLNS_NUMERACY":
+                    case "MYLNS_LITERACY":
                         return 200;
-                    case "LW_DATE":
+                    case "MYLNS_NUMERACY":
                         return 201;
-                    case "LW_TIME":
+                    case "KLNP_LITERACY":
                         return 202;
-                    case "LW_USER":
+                    case "KLNP_NUMERACY":
                         return 203;
+                    case "STUDENT_SI_ID":
+                        return 204;
+                    case "ENROLMENT_SI_ID":
+                        return 205;
+                    case "APPLICATION_SI_ID":
+                        return 206;
+                    case "FLO":
+                        return 207;
+                    case "LW_DATE":
+                        return 208;
+                    case "LW_TIME":
+                        return 209;
+                    case "LW_USER":
+                        return 210;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

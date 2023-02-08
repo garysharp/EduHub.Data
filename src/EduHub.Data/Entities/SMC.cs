@@ -97,7 +97,7 @@ namespace EduHub.Data.Entities
 
         /// <summary>
         /// Where is the preventative medication stored?
-        /// [Alphanumeric (30)]
+        /// [Alphanumeric (100)]
         /// </summary>
         public string REGULAR_MEDICATION_LOCAT { get; internal set; }
 
@@ -169,7 +169,7 @@ namespace EduHub.Data.Entities
 
         /// <summary>
         /// Where is the medication stored that should be taken if the condition occurs
-        /// [Alphanumeric (30)]
+        /// [Alphanumeric (100)]
         /// </summary>
         public string AD_HOC_MEDICATION_LOCAT { get; internal set; }
 
@@ -264,6 +264,18 @@ namespace EduHub.Data.Entities
         /// As-Required Medication Expiry
         /// </summary>
         public DateTime? EXP_ASREQ_MED { get; internal set; }
+
+        /// <summary>
+        /// Student Insight (NextGen) unique identifier
+        /// [Alphanumeric (20)]
+        /// </summary>
+        public string HEALTH_INFO_SI_ID { get; internal set; }
+
+        /// <summary>
+        /// Flag to identify the most critical/important medical conditions for a student
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string ALERT { get; internal set; }
 
         /// <summary>
         /// Last write date

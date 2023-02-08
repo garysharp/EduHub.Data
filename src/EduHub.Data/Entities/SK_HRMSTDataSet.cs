@@ -131,6 +131,15 @@ namespace EduHub.Data.Entities
                     case "FINISH_DATE":
                         mapper[i] = (e, v) => e.FINISH_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
+                    case "EMERG_CONTACT_TWO":
+                        mapper[i] = (e, v) => e.EMERG_CONTACT_TWO = v;
+                        break;
+                    case "EMERG_RELATE_TWO":
+                        mapper[i] = (e, v) => e.EMERG_RELATE_TWO = v;
+                        break;
+                    case "EMERG_PHONE_TWO":
+                        mapper[i] = (e, v) => e.EMERG_PHONE_TWO = v;
+                        break;
                     default:
                         mapper[i] = MapperNoOp;
                         break;
@@ -291,6 +300,9 @@ BEGIN
         [EMERG_PHONE] varchar(24) NULL,
         [START_DATE] datetime NULL,
         [FINISH_DATE] datetime NULL,
+        [EMERG_CONTACT_TWO] varchar(50) NULL,
+        [EMERG_RELATE_TWO] varchar(30) NULL,
+        [EMERG_PHONE_TWO] varchar(24) NULL,
         CONSTRAINT [SK_HRMST_Index_SEQ] PRIMARY KEY CLUSTERED (
             [SEQ] ASC
         )
@@ -385,7 +397,7 @@ END");
             {
             }
 
-            public override int FieldCount { get { return 31; } }
+            public override int FieldCount { get { return 34; } }
 
             public override object GetValue(int i)
             {
@@ -453,6 +465,12 @@ END");
                         return Current.START_DATE;
                     case 30: // FINISH_DATE
                         return Current.FINISH_DATE;
+                    case 31: // EMERG_CONTACT_TWO
+                        return Current.EMERG_CONTACT_TWO;
+                    case 32: // EMERG_RELATE_TWO
+                        return Current.EMERG_RELATE_TWO;
+                    case 33: // EMERG_PHONE_TWO
+                        return Current.EMERG_PHONE_TWO;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
                 }
@@ -522,6 +540,12 @@ END");
                         return Current.START_DATE == null;
                     case 30: // FINISH_DATE
                         return Current.FINISH_DATE == null;
+                    case 31: // EMERG_CONTACT_TWO
+                        return Current.EMERG_CONTACT_TWO == null;
+                    case 32: // EMERG_RELATE_TWO
+                        return Current.EMERG_RELATE_TWO == null;
+                    case 33: // EMERG_PHONE_TWO
+                        return Current.EMERG_PHONE_TWO == null;
                     default:
                         return false;
                 }
@@ -593,6 +617,12 @@ END");
                         return "START_DATE";
                     case 30: // FINISH_DATE
                         return "FINISH_DATE";
+                    case 31: // EMERG_CONTACT_TWO
+                        return "EMERG_CONTACT_TWO";
+                    case 32: // EMERG_RELATE_TWO
+                        return "EMERG_RELATE_TWO";
+                    case 33: // EMERG_PHONE_TWO
+                        return "EMERG_PHONE_TWO";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
                 }
@@ -664,6 +694,12 @@ END");
                         return 29;
                     case "FINISH_DATE":
                         return 30;
+                    case "EMERG_CONTACT_TWO":
+                        return 31;
+                    case "EMERG_RELATE_TWO":
+                        return 32;
+                    case "EMERG_PHONE_TWO":
+                        return 33;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }

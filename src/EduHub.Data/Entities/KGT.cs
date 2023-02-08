@@ -13,8 +13,11 @@ namespace EduHub.Data.Entities
 
         #region Foreign Navigation Properties
 
+        private IReadOnlyList<CR> Cache_COUNTRY_CR_COUNTRY;
         private IReadOnlyList<DF> Cache_COUNTRY_DF_BIRTH_COUNTRY_A;
         private IReadOnlyList<DF> Cache_COUNTRY_DF_BIRTH_COUNTRY_B;
+        private IReadOnlyList<DR> Cache_COUNTRY_DR_BUSCOUNTRY;
+        private IReadOnlyList<DR> Cache_COUNTRY_DR_MAILCOUNTRY;
         private IReadOnlyList<OSCS> Cache_COUNTRY_OSCS_ADULT_A_COUNTRY;
         private IReadOnlyList<OSCS> Cache_COUNTRY_OSCS_ADULT_B_COUNTRY;
         private IReadOnlyList<OSCS> Cache_COUNTRY_OSCS_BIRTH_COUNTRY;
@@ -96,6 +99,24 @@ namespace EduHub.Data.Entities
         #region Foreign Navigation Properties
 
         /// <summary>
+        /// CR (Accounts Payable) related entities by [KGT.COUNTRY]-&gt;[CR.COUNTRY]
+        /// Country code
+        /// </summary>
+        public IReadOnlyList<CR> COUNTRY_CR_COUNTRY
+        {
+            get
+            {
+                if (Cache_COUNTRY_CR_COUNTRY == null &&
+                    !Context.CR.TryFindByCOUNTRY(COUNTRY, out Cache_COUNTRY_CR_COUNTRY))
+                {
+                    Cache_COUNTRY_CR_COUNTRY = new List<CR>().AsReadOnly();
+                }
+
+                return Cache_COUNTRY_CR_COUNTRY;
+            }
+        }
+
+        /// <summary>
         /// DF (Families) related entities by [KGT.COUNTRY]-&gt;[DF.BIRTH_COUNTRY_A]
         /// Country code
         /// </summary>
@@ -128,6 +149,42 @@ namespace EduHub.Data.Entities
                 }
 
                 return Cache_COUNTRY_DF_BIRTH_COUNTRY_B;
+            }
+        }
+
+        /// <summary>
+        /// DR (Accounts Receivable) related entities by [KGT.COUNTRY]-&gt;[DR.BUSCOUNTRY]
+        /// Country code
+        /// </summary>
+        public IReadOnlyList<DR> COUNTRY_DR_BUSCOUNTRY
+        {
+            get
+            {
+                if (Cache_COUNTRY_DR_BUSCOUNTRY == null &&
+                    !Context.DR.TryFindByBUSCOUNTRY(COUNTRY, out Cache_COUNTRY_DR_BUSCOUNTRY))
+                {
+                    Cache_COUNTRY_DR_BUSCOUNTRY = new List<DR>().AsReadOnly();
+                }
+
+                return Cache_COUNTRY_DR_BUSCOUNTRY;
+            }
+        }
+
+        /// <summary>
+        /// DR (Accounts Receivable) related entities by [KGT.COUNTRY]-&gt;[DR.MAILCOUNTRY]
+        /// Country code
+        /// </summary>
+        public IReadOnlyList<DR> COUNTRY_DR_MAILCOUNTRY
+        {
+            get
+            {
+                if (Cache_COUNTRY_DR_MAILCOUNTRY == null &&
+                    !Context.DR.TryFindByMAILCOUNTRY(COUNTRY, out Cache_COUNTRY_DR_MAILCOUNTRY))
+                {
+                    Cache_COUNTRY_DR_MAILCOUNTRY = new List<DR>().AsReadOnly();
+                }
+
+                return Cache_COUNTRY_DR_MAILCOUNTRY;
             }
         }
 

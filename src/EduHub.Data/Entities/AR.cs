@@ -626,6 +626,17 @@ namespace EduHub.Data.Entities
         public decimal? FAIR_MARKET { get; internal set; }
 
         /// <summary>
+        /// Description of AR.RELEASE_TYPE (AKR.DESCRIPTION)
+        /// [Alphanumeric (40)]
+        /// </summary>
+        public string AKR_DESC { get; internal set; }
+
+        /// <summary>
+        /// The attachment
+        /// </summary>
+        public byte[] ATTACHMENT { get; internal set; }
+
+        /// <summary>
         /// Last write date
         /// </summary>
         public DateTime? LW_DATE { get; internal set; }

@@ -541,6 +541,30 @@ namespace EduHub.Data.Entities
         public string MEDICAL_ALERT { get; internal set; }
 
         /// <summary>
+        /// &lt;No documentation available&gt;
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string HEARING_IMPAIR { get; internal set; }
+
+        /// <summary>
+        /// &lt;No documentation available&gt;
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string VISUAL_IMPAIR { get; internal set; }
+
+        /// <summary>
+        /// &lt;No documentation available&gt;
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string SPEECH_IMPAIR { get; internal set; }
+
+        /// <summary>
+        /// &lt;No documentation available&gt;
+        /// [Uppercase Alphanumeric (1)]
+        /// </summary>
+        public string PHYSICAL_IMPAIR { get; internal set; }
+
+        /// <summary>
         /// Is there an associated SMC record? (Y/N)
         /// [Uppercase Alphanumeric (1)]
         /// </summary>
@@ -874,6 +898,24 @@ namespace EduHub.Data.Entities
         /// Actual Date data transfered into live table
         /// </summary>
         public DateTime? IMP_DATE { get; internal set; }
+
+        /// <summary>
+        /// Student Insight (NextGen) unique identifier
+        /// [Alphanumeric (20)]
+        /// </summary>
+        public string STUDENT_SI_ID { get; internal set; }
+
+        /// <summary>
+        /// Student Insight (NextGen) unique identifier
+        /// [Alphanumeric (20)]
+        /// </summary>
+        public string ENROLMENT_SI_ID { get; internal set; }
+
+        /// <summary>
+        /// Student Insight (NextGen) unique identifier
+        /// [Alphanumeric (20)]
+        /// </summary>
+        public string APPLICATION_SI_ID { get; internal set; }
 
         /// <summary>
         /// Last write date

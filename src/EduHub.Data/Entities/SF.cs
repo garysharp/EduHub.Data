@@ -145,7 +145,7 @@ namespace EduHub.Data.Entities
 
         /// <summary>
         /// First given name
-        /// [Alphanumeric (20)]
+        /// [Alphanumeric (30)]
         /// </summary>
         public string FIRST_NAME { get; internal set; }
 
@@ -157,7 +157,7 @@ namespace EduHub.Data.Entities
 
         /// <summary>
         /// Preferred name
-        /// [Alphanumeric (15)]
+        /// [Alphanumeric (30)]
         /// </summary>
         public string PREF_NAME { get; internal set; }
 
@@ -202,7 +202,7 @@ namespace EduHub.Data.Entities
 
         /// <summary>
         /// E-mail address
-        /// [Alphanumeric (60)]
+        /// [Alphanumeric (70)]
         /// </summary>
         public string E_MAIL { get; internal set; }
 
@@ -543,13 +543,13 @@ namespace EduHub.Data.Entities
 
         /// <summary>
         /// Name(s) of person(s) to contact in an emergency
-        /// [Titlecase (30)]
+        /// [Titlecase (50)]
         /// </summary>
         public string EMERG_NAME01 { get; internal set; }
 
         /// <summary>
         /// Name(s) of person(s) to contact in an emergency
-        /// [Titlecase (30)]
+        /// [Titlecase (50)]
         /// </summary>
         public string EMERG_NAME02 { get; internal set; }
 
@@ -567,25 +567,25 @@ namespace EduHub.Data.Entities
 
         /// <summary>
         /// Relationship to staff member of each person to contact in an emergency
-        /// [Titlecase (12)]
+        /// [Titlecase (30)]
         /// </summary>
         public string EMERG_RELATION01 { get; internal set; }
 
         /// <summary>
         /// Relationship to staff member of each person to contact in an emergency
-        /// [Titlecase (12)]
+        /// [Titlecase (30)]
         /// </summary>
         public string EMERG_RELATION02 { get; internal set; }
 
         /// <summary>
         /// Contact details for each person to contact in an emergency
-        /// [Alphanumeric (20)]
+        /// [Alphanumeric (24)]
         /// </summary>
         public string EMERG_CONTACT01 { get; internal set; }
 
         /// <summary>
         /// Contact details for each person to contact in an emergency
-        /// [Alphanumeric (20)]
+        /// [Alphanumeric (24)]
         /// </summary>
         public string EMERG_CONTACT02 { get; internal set; }
 

@@ -377,6 +377,12 @@ namespace EduHub.Data.Entities
                     case "FAIR_MARKET":
                         mapper[i] = (e, v) => e.FAIR_MARKET = v == null ? (decimal?)null : decimal.Parse(v);
                         break;
+                    case "AKR_DESC":
+                        mapper[i] = (e, v) => e.AKR_DESC = v;
+                        break;
+                    case "ATTACHMENT":
+                        mapper[i] = (e, v) => e.ATTACHMENT = null; // eduHub is not encoding byte arrays
+                        break;
                     case "LW_DATE":
                         mapper[i] = (e, v) => e.LW_DATE = v == null ? (DateTime?)null : DateTime.ParseExact(v, "d/MM/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         break;
@@ -1271,6 +1277,8 @@ BEGIN
         [ASSET_PIC] varbinary(MAX) NULL,
         [CAMPUS] int NULL,
         [FAIR_MARKET] money NULL,
+        [AKR_DESC] varchar(40) NULL,
+        [ATTACHMENT] varbinary(MAX) NULL,
         [LW_DATE] datetime NULL,
         [LW_TIME] smallint NULL,
         [LW_USER] varchar(128) NULL,
@@ -1512,7 +1520,7 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND 
             {
             }
 
-            public override int FieldCount { get { return 111; } }
+            public override int FieldCount { get { return 113; } }
 
             public override object GetValue(int i)
             {
@@ -1734,11 +1742,15 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND 
                         return Current.CAMPUS;
                     case 107: // FAIR_MARKET
                         return Current.FAIR_MARKET;
-                    case 108: // LW_DATE
+                    case 108: // AKR_DESC
+                        return Current.AKR_DESC;
+                    case 109: // ATTACHMENT
+                        return Current.ATTACHMENT;
+                    case 110: // LW_DATE
                         return Current.LW_DATE;
-                    case 109: // LW_TIME
+                    case 111: // LW_TIME
                         return Current.LW_TIME;
-                    case 110: // LW_USER
+                    case 112: // LW_USER
                         return Current.LW_USER;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(i));
@@ -1961,11 +1973,15 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND 
                         return Current.CAMPUS == null;
                     case 107: // FAIR_MARKET
                         return Current.FAIR_MARKET == null;
-                    case 108: // LW_DATE
+                    case 108: // AKR_DESC
+                        return Current.AKR_DESC == null;
+                    case 109: // ATTACHMENT
+                        return Current.ATTACHMENT == null;
+                    case 110: // LW_DATE
                         return Current.LW_DATE == null;
-                    case 109: // LW_TIME
+                    case 111: // LW_TIME
                         return Current.LW_TIME == null;
-                    case 110: // LW_USER
+                    case 112: // LW_USER
                         return Current.LW_USER == null;
                     default:
                         return false;
@@ -2192,11 +2208,15 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND 
                         return "CAMPUS";
                     case 107: // FAIR_MARKET
                         return "FAIR_MARKET";
-                    case 108: // LW_DATE
+                    case 108: // AKR_DESC
+                        return "AKR_DESC";
+                    case 109: // ATTACHMENT
+                        return "ATTACHMENT";
+                    case 110: // LW_DATE
                         return "LW_DATE";
-                    case 109: // LW_TIME
+                    case 111: // LW_TIME
                         return "LW_TIME";
-                    case 110: // LW_USER
+                    case 112: // LW_USER
                         return "LW_USER";
                     default:
                         throw new ArgumentOutOfRangeException(nameof(ordinal));
@@ -2423,12 +2443,16 @@ IF EXISTS (SELECT * FROM dbo.sysindexes WHERE id = OBJECT_ID(N'[dbo].[AR]') AND 
                         return 106;
                     case "FAIR_MARKET":
                         return 107;
-                    case "LW_DATE":
+                    case "AKR_DESC":
                         return 108;
-                    case "LW_TIME":
+                    case "ATTACHMENT":
                         return 109;
-                    case "LW_USER":
+                    case "LW_DATE":
                         return 110;
+                    case "LW_TIME":
+                        return 111;
+                    case "LW_USER":
+                        return 112;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(name));
                 }
