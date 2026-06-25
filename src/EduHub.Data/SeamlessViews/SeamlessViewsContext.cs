@@ -1,7 +1,11 @@
 ﻿using EduHub.Data.SeamlessViews.Entities;
 using System;
 using System.Collections.Generic;
+#if NET452
 using System.Data.SqlClient;
+#elif NET10_0
+using Microsoft.Data.SqlClient;
+#endif
 using System.Threading.Tasks;
 
 namespace EduHub.Data.SeamlessViews

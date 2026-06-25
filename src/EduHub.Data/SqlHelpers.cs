@@ -1,4 +1,8 @@
-﻿using System.Data.SqlClient;
+﻿#if NET452
+using System.Data.SqlClient;
+#elif NET10_0
+using Microsoft.Data.SqlClient;
+#endif
 
 namespace EduHub.Data
 {
@@ -12,6 +16,9 @@ namespace EduHub.Data
                 DataSource = Server,
                 InitialCatalog = Database,
                 MultipleActiveResultSets = true,
+#if NET10_0
+                Encrypt = false,
+#endif
                 IntegratedSecurity = true
             };
         }
@@ -24,6 +31,9 @@ namespace EduHub.Data
                 DataSource = Server,
                 InitialCatalog = Database,
                 MultipleActiveResultSets = true,
+#if NET10_0
+                Encrypt = false,
+#endif
                 UserID = SqlUsername,
                 Password = SqlPassword
             };

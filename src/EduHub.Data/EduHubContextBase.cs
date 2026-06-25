@@ -3,7 +3,11 @@ using EduHub.Data.SeamlessViews;
 using EduHub.Data.WriteBack;
 using System;
 using System.Collections.Generic;
+#if NET452
 using System.Data.SqlClient;
+#elif NET10_0
+using Microsoft.Data.SqlClient;
+#endif
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;

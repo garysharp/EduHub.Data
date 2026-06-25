@@ -3,7 +3,11 @@ using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Data;
+#if NET452
 using System.Data.SqlClient;
+#elif NET10_0
+using Microsoft.Data.SqlClient;
+#endif
 using System.Globalization;
 using System.Linq;
 using System.Text;

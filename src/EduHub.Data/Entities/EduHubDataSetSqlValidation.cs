@@ -1,4 +1,8 @@
+#if NET452
 using System.Data.SqlClient;
+#elif NET10_0
+using Microsoft.Data.SqlClient;
+#endif
 
 namespace EduHub.Data.Entities
 {
